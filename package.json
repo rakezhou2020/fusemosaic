@@ -9,9 +9,9 @@
     "start": "wrangler dev",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "deploy": "npm run build && wrangler deploy",
-    "deploy:only": "wrangler deploy",
-    "deploy:dry-run": "npm run build && wrangler deploy --dry-run",
+    "deploy": "npm run build && npx @vinext/cloudflare deploy",
+    "deploy:only": "npx @vinext/cloudflare deploy --skip-build",
+    "deploy:dry-run": "npm run build && npx @vinext/cloudflare deploy --dry-run",
     "preview": "npm run build && wrangler dev",
     "cf-typegen": "wrangler types"
   },

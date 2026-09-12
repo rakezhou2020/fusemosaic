@@ -33,21 +33,14 @@ npm run preview
 
 ## Cloudflare Workers Git deployment
 
-Connect the GitHub repository to Workers Builds and use:
-
-- Build command: `npm run build`
-- Deploy command: `npx wrangler deploy`
-
-This is the recommended configuration: Workers Builds runs the vinext build once, then Wrangler deploys its generated Worker configuration. `npm run build` creates `.wrangler/deploy/config.json`, which redirects Wrangler from the source adapter entry in `wrangler.jsonc` to `dist/server/wrangler.json`. The generated configuration uses `dist/server/index.js` as the actual Worker entry point.
-
-If the Cloudflare dashboard does not retain or run a separate Build command, use this fail-safe pair instead:
+Connect the GitHub repository to Workers Builds and use the vinext Cloudflare CLI:
 
 - Build command: leave empty
 - Deploy command: `npm run deploy`
 
-The `deploy` script deliberately runs `npm run build` before `wrangler deploy`; do not configure both a Build command and this fail-safe deploy command, because that would build twice.
+`npm run deploy` runs `vinext build` and then the local `@vinext/cloudflare` CLI. That CLI validates the vinext Cloudflare setup and deploys the generated Worker configuration, rather than asking Wrangler to resolve the source adapter entry by itself. This makes the Git deployment self-contained when Workers Builds does not run a separate Build command.
 
-Use `npm run deploy:dry-run` for a non-production local deployment check. No environment variables, databases, secrets, or paid bindings are required for this first version. The Cloudflare Root directory must be the repository root. After the first successful Worker deployment, add `fusemosaic.com` as a custom domain in the Cloudflare dashboard and point the domain's DNS to Cloudflare.
+The build generates `.wrangler/deploy/config.json`, which redirects deployment to the generated Worker configuration. The generated path is version-dependent; inspect the build output rather than hard-coding `dist/server`. Use `npm run deploy:dry-run` for a non-production local validation. No environment variables, databases, secrets, or paid bindings are required for this first version. The Cloudflare Root directory must be the repository root. After the first successful Worker deployment, add `fusemosaic.com` as a custom domain in the Cloudflare dashboard and point the domain's DNS to Cloudflare.
 
 ## Content model
 
