@@ -27,7 +27,7 @@ export default async function Home() {
             <button type="submit">Search library <span aria-hidden="true">→</span></button>
           </form>
           <div className="hero-notes" aria-label="Library features">
-            <span><b>500+</b> patterns planned</span><span><b>JPG</b> quick reference</span><span><b>PDF</b> print-ready</span>
+            <span><b>500+</b> patterns planned</span><span><b>JPG</b> quick reference</span><span><b>Free</b> to download</span>
           </div>
         </div>
         <div className="hero-board" aria-label="Featured dinosaur fuse bead artwork">
@@ -39,7 +39,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="feature-strip" aria-label="FuseMosaic features"><div className="shell feature-strip__inner"><strong>Free pattern archive</strong><span>Printable files</span><span>No sign-up</span><span>JPG + PDF</span><span>Built for makers</span></div></section>
+      <section className="feature-strip" aria-label="FuseMosaic features"><div className="shell feature-strip__inner"><strong>Free pattern archive</strong><span>Printable JPG files</span><span>No sign-up</span><span>Free downloads</span><span>Built for makers</span></div></section>
 
       <section className="category-section shell" id="categories">
         <div className="section-heading"><div><p className="eyebrow">Browse by subject</p><h2>A wall of possibilities.</h2></div><p>Every collection has its own rhythm—compact weekend pieces, sweeping creatures, and graphic motifs made one bead at a time.</p></div>

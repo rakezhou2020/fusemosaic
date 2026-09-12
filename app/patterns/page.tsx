@@ -4,7 +4,7 @@ import { PageIntro } from "@/components/page-intro";
 import { PatternCard } from "@/components/pattern-card";
 import { publicPatterns } from "@/lib/public-patterns";
 
-export const metadata: Metadata = { title: "Free Fuse Bead Patterns", description: "Browse free printable fuse bead and Perler bead patterns with JPG and PDF downloads.", alternates: { canonical: "/patterns" } };
+export const metadata: Metadata = { title: "Free Fuse Bead Patterns", description: "Browse free printable fuse bead and Perler bead patterns with JPG downloads.", alternates: { canonical: "/patterns" } };
 
 export default async function PatternsPage({ searchParams }: { searchParams: Promise<{ q?: string | string[] }> }) {
   const raw = (await searchParams).q;
