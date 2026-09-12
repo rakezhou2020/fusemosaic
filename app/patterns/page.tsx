@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntro } from "@/components/page-intro";
 import { PatternCard } from "@/components/pattern-card";
-import { patterns } from "@/data/patterns";
+import { publicPatterns } from "@/lib/public-patterns";
 
 export const metadata: Metadata = { title: "Free Fuse Bead Patterns", description: "Browse free printable fuse bead and Perler bead patterns with JPG and PDF downloads.", alternates: { canonical: "/patterns" } };
 
 export default async function PatternsPage({ searchParams }: { searchParams: Promise<{ q?: string | string[] }> }) {
   const raw = (await searchParams).q;
   const query = (Array.isArray(raw) ? raw[0] : raw)?.trim().toLowerCase() ?? "";
-  const filtered = query ? patterns.filter((pattern) => [pattern.title, pattern.category, pattern.difficulty, pattern.description].join(" ").toLowerCase().includes(query)) : patterns;
+  const filtered = await publicPatterns(query);
   return (
     <>
       <PageIntro eyebrow="The free archive" title={query ? `Results for “${query}”` : "Printable patterns, ready when you are."} copy="Browse approachable miniatures and detailed statement pieces. Every published design includes a clear reference image and a printable pattern document." />

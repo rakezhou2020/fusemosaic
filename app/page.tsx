@@ -2,7 +2,7 @@ import Link from "next/link";
 import { BrandMark } from "@/components/brand-mark";
 import { PatternCard } from "@/components/pattern-card";
 import { PatternVisual } from "@/components/pattern-visual";
-import { categories, patterns } from "@/data/patterns";
+import { publicCategories, publicPatterns } from "@/lib/public-patterns";
 
 const homeJsonLd = {
   "@context": "https://schema.org", "@type": "WebSite", name: "FuseMosaic", url: "https://fusemosaic.com",
@@ -10,7 +10,8 @@ const homeJsonLd = {
   potentialAction: { "@type": "SearchAction", target: "https://fusemosaic.com/patterns?q={search_term_string}", "query-input": "required name=search_term_string" },
 };
 
-export default function Home() {
+export default async function Home() {
+  const [categories, patterns] = await Promise.all([publicCategories(), publicPatterns()]);
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }} />
@@ -22,17 +23,17 @@ export default function Home() {
           <p className="hero-lede">Find clear, printable fuse bead patterns for slow afternoons, ambitious builds, and every mosaic in between.</p>
           <form action="/patterns" className="hero-search">
             <label className="sr-only" htmlFor="hero-q">Search the pattern library</label>
-            <input id="hero-q" type="search" name="q" placeholder="Try dragon, flower, deer…" />
+            <input id="hero-q" type="search" name="q" placeholder="Try cupcake, dragon, flower…" />
             <button type="submit">Search library <span aria-hidden="true">→</span></button>
           </form>
           <div className="hero-notes" aria-label="Library features">
             <span><b>500+</b> patterns planned</span><span><b>JPG</b> quick reference</span><span><b>PDF</b> print-ready</span>
           </div>
         </div>
-        <div className="hero-board" aria-label="Featured Celestial Deer pattern">
-          <div className="board-top"><span>Featured board / 001</span><span>64 × 90</span></div>
-          <Link href="/patterns/celestial-deer" className="board-canvas"><PatternVisual art="deer" image="/images/patterns/celestial-deer-large-preview.webp" label="Celestial Deer fuse bead pattern" priority /></Link>
-          <div className="board-caption"><div><span>Fantasy archive</span><strong>Celestial Deer</strong></div><Link href="/patterns/celestial-deer">Open pattern <span aria-hidden="true">↗</span></Link></div>
+        <div className="hero-board" aria-label="Featured Cherry Chip Cupcake pattern">
+          <div className="board-top"><span>Featured board / 001</span><span>36 × 36</span></div>
+          <Link href="/patterns/cherry-chip-cupcake" className="board-canvas"><PatternVisual art="cupcake" image="/downloads/cherry-chip-cupcake-pattern.jpg" label="Cherry Chip Cupcake fuse bead pattern" priority /></Link>
+          <div className="board-caption"><div><span>Food archive</span><strong>Cherry Chip Cupcake</strong></div><Link href="/patterns/cherry-chip-cupcake">Open pattern <span aria-hidden="true">↗</span></Link></div>
         </div>
       </section>
 

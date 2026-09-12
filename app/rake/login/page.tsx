@@ -1,0 +1,3 @@
+"use client";
+import { useState } from "react";
+export default function RakeLogin() { const [error, setError] = useState(""); async function submit(form: FormData) { setError(""); const response = await fetch("/api/rake/auth/login", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ password:form.get("password") }) }); if (!response.ok) { setError("Password was not accepted."); return; } location.assign("/rake"); } return <main className="rake-login"><h1>FuseMosaic administration</h1><p>Sign in to continue.</p><form action={submit} className="rake-form"><label>Password<input name="password" type="password" autoFocus required /></label>{error && <p className="rake-notice">{error}</p>}<button>Sign in</button></form></main>; }

@@ -3,19 +3,18 @@ import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { PatternCard } from "@/components/pattern-card";
 import { PatternVisual } from "@/components/pattern-visual";
-import { getPattern, patterns } from "@/data/patterns";
+import { publicPattern, publicPatterns } from "@/lib/public-patterns";
 
-export const dynamicParams = false;
-export function generateStaticParams() { return patterns.map(({ slug }) => ({ slug })); }
+export async function generateStaticParams() { return (await publicPatterns()).map(({ slug }) => ({ slug })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params; const pattern = getPattern(slug); if (!pattern) return {};
+  const { slug } = await params; const pattern = await publicPattern(slug); if (!pattern) return {};
   return { title: pattern.title, description: pattern.description, alternates: { canonical: `/patterns/${pattern.slug}` }, openGraph: { title: pattern.title, description: pattern.description, type: "article", images: pattern.previewImage ? [{ url: pattern.previewImage }] : undefined } };
 }
 
 export default async function PatternDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params; const pattern = getPattern(slug); if (!pattern) notFound();
-  const related = patterns.filter((item) => item.slug !== pattern.slug && (item.categorySlug === pattern.categorySlug || item.featured)).slice(0, 4);
+  const { slug } = await params; const pattern = await publicPattern(slug); if (!pattern) notFound();
+  const related = (await publicPatterns()).filter((item) => item.slug !== pattern.slug && (item.categorySlug === pattern.categorySlug || item.featured)).slice(0, 4);
   const jsonLd = {
     "@context": "https://schema.org", "@type": "CreativeWork", name: pattern.title, description: pattern.description,
     url: `https://fusemosaic.com/patterns/${pattern.slug}`, isAccessibleForFree: true,
