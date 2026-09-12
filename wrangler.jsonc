@@ -11,6 +11,23 @@
     "not_found_handling": "none",
     "binding": "ASSETS"
   },
+  "d1_databases": [
+    {
+      "binding": "PATTERNS_DB",
+      "database_name": "fusemosaic-patterns",
+      "database_id": "c01f0184-df7c-48ba-a3c6-9348ccbf0380",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PATTERNS_BUCKET",
+      "bucket_name": "fusemosaic-patterns"
+    }
+  ],
+  "images": {
+    "binding": "IMAGES"
+  },
   "cache": {
     "enabled": true
   },
