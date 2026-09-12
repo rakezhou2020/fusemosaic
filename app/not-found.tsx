@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function NotFound() { return <section className="page-intro shell"><p className="eyebrow">404 / Missing tile</p><h1>This piece is not on the board.</h1><p className="page-intro__copy">The pattern may have moved, or the address may be incomplete.</p><p style={{ marginTop: 28 }}><Link className="text-link" href="/patterns">Return to the pattern archive →</Link></p></section>; }
