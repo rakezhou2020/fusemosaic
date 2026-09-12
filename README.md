@@ -38,7 +38,16 @@ Connect the GitHub repository to Workers Builds and use:
 - Build command: `npm run build`
 - Deploy command: `npx wrangler deploy`
 
-No environment variables, databases, secrets, or paid bindings are required for this first version. After the first successful Worker deployment, add `fusemosaic.com` as a custom domain in the Cloudflare dashboard and point the domain's DNS to Cloudflare.
+This is the recommended configuration: Workers Builds runs the vinext build once, then Wrangler deploys its generated Worker configuration. `npm run build` creates `.wrangler/deploy/config.json`, which redirects Wrangler from the source adapter entry in `wrangler.jsonc` to `dist/server/wrangler.json`. The generated configuration uses `dist/server/index.js` as the actual Worker entry point.
+
+If the Cloudflare dashboard does not retain or run a separate Build command, use this fail-safe pair instead:
+
+- Build command: leave empty
+- Deploy command: `npm run deploy`
+
+The `deploy` script deliberately runs `npm run build` before `wrangler deploy`; do not configure both a Build command and this fail-safe deploy command, because that would build twice.
+
+Use `npm run deploy:dry-run` for a non-production local deployment check. No environment variables, databases, secrets, or paid bindings are required for this first version. The Cloudflare Root directory must be the repository root. After the first successful Worker deployment, add `fusemosaic.com` as a custom domain in the Cloudflare dashboard and point the domain's DNS to Cloudflare.
 
 ## Content model
 
