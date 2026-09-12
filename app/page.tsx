@@ -30,10 +30,12 @@ export default async function Home() {
             <span><b>500+</b> patterns planned</span><span><b>JPG</b> quick reference</span><span><b>PDF</b> print-ready</span>
           </div>
         </div>
-        <div className="hero-board" aria-label="Featured Cherry Chip Cupcake pattern">
-          <div className="board-top"><span>Featured board / 001</span><span>36 × 36</span></div>
-          <Link href="/patterns/cherry-chip-cupcake" className="board-canvas"><PatternVisual art="cupcake" image="/downloads/cherry-chip-cupcake-pattern.jpg" label="Cherry Chip Cupcake fuse bead pattern" priority /></Link>
-          <div className="board-caption"><div><span>Food archive</span><strong>Cherry Chip Cupcake</strong></div><Link href="/patterns/cherry-chip-cupcake">Open pattern <span aria-hidden="true">↗</span></Link></div>
+        <div className="hero-board" aria-label="Featured dinosaur fuse bead artwork">
+          <div className="board-top"><span>Featured make / 001</span><span>Explore collection</span></div>
+          <Link href="#chinese" className="board-canvas board-canvas--featured" aria-label="Jump to the Chinese Collection">
+            <img src="/images/featured-dinosaur-fuse-beads.webp" alt="Colorful dinosaur fuse bead artwork on a work table" />
+          </Link>
+          <div className="board-caption"><div><span>Featured make</span><strong>Discover the collection</strong></div><Link href="#chinese">Chinese Collection <span aria-hidden="true">↓</span></Link></div>
         </div>
       </section>
 
