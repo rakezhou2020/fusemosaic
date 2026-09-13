@@ -29,6 +29,7 @@ export type Pattern = {
   rightsStatus?: "original" | "public-domain" | "fan-made" | "licensed" | "review";
   franchise?: string;
   rightsNote?: string;
+  lastModified?: string;
   status: "published" | "coming-soon";
   art: ArtVariant;
 };
@@ -51,6 +52,7 @@ export type Category = {
   count: number;
   art: ArtVariant;
   size: "large" | "wide" | "tall" | "standard";
+  lastModified?: string;
 };
 
 const sharedColors: PatternColor[] = [
