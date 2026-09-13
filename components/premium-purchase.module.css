@@ -1,0 +1,15 @@
+.purchase > p:first-child { margin-top: 7px; color: var(--muted); font-size: 12px; }
+.price { margin-top: 14px !important; color: var(--ink) !important; font-size: 16px !important; font-weight: 800; }
+.price span { color: var(--muted); font-size: 11px; font-weight: 500; }
+.actions { display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); gap: 8px; margin-top: 15px; }
+.actions button, .unlocked a { min-height: 46px; padding: 12px 14px; border: 1px solid var(--ink); font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; }
+.cart { background: var(--paper); color: var(--ink); }
+.buy, .unlocked a { background: var(--ink); color: white; }
+.actions button:disabled { cursor: wait; opacity: .6; }
+.status { min-height: 17px; margin-top: 10px !important; color: var(--muted); font-size: 11px !important; }
+.unlocked { margin-top: 8px; padding: 15px; border: 1px solid #8ea56e; background: #f1f5e8; }
+.unlocked strong { display: block; font-size: 14px; }
+.unlocked p { margin-top: 5px; color: var(--muted); font-size: 12px; }
+.unlocked a { display: inline-flex; align-items: center; margin-top: 13px; text-decoration: none; }
+
+@media (max-width: 480px) { .actions { grid-template-columns: 1fr; } }

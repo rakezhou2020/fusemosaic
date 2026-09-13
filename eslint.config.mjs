@@ -20,6 +20,7 @@ const eslintConfig = defineConfig([
     "app.js",
     "build-celestial-deer.cjs",
     "patterns/**",
+    ".tmp-*/**",
   ]),
 ]);
 

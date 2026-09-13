@@ -6,6 +6,7 @@ export type FuseMosaicEnv = {
   IMAGES?: ImagesBinding;
   ADMIN_PASSWORD?: string;
   ADMIN_SESSION_SECRET?: string;
+  PAYMENT_API_KEY?: string;
 };
 
 export function getFuseMosaicEnv(): FuseMosaicEnv {
