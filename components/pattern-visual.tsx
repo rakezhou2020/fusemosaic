@@ -2,7 +2,6 @@ import Image from "next/image";
 import type { ArtVariant } from "@/data/patterns";
 
 const artBoards: Record<ArtVariant, string[]> = {
-  deer: [],
   dragon: [
     "....yy......", "...yrry.....", "..rrrogg....", ".rrogggbb...", "..oggbbpp...", "...ggbbp....",
     "....bbp..g..", "...bbbb.ggg.", "..bbbggggg..", ".bbb..gg....", "bb....ggg...", "b......gg...",

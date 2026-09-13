@@ -132,6 +132,7 @@ export function PatternEditor({ pattern, categories }: { pattern: Pattern; categ
           <option value="draft">Draft</option><option value="published">Published</option><option value="hidden">Hidden</option><option value="removed">Removed</option>
         </select></label>
       </div>
+      {values.content_rights_status === "original" ? <p className="rake-notice">Original work is approved automatically and can be published without a separate rights-review step.</p> : null}
       <div className="rake-grid">
         <label>Franchise / subject source (optional)<input value={String(values.franchise ?? "")} onChange={(event) => update("franchise", event.target.value)} /></label>
         <label>Rights note (optional)<input value={String(values.rights_note ?? "")} onChange={(event) => update("rights_note", event.target.value)} /></label>

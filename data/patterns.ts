@@ -39,8 +39,7 @@ export type ArtVariant =
   | "berry"
   | "mushroom"
   | "dinosaur"
-  | "lantern"
-  | "cupcake";
+  | "lantern";
 
 export type Category = {
   slug: string;
@@ -60,19 +59,19 @@ const sharedColors: PatternColor[] = [
   { code: "F", name: "Slate Blue", hex: "#5987a6", beads: 41 },
 ];
 
-const cupcakeColors: PatternColor[] = [
-  { code: "H2", name: "White", hex: "#FFFFFF", beads: 799 },
-  { code: "M4", name: "Pale Blush", hex: "#F2E0D5", beads: 117 },
-  { code: "G8", name: "Dark Chocolate", hex: "#53301F", beads: 94 },
-  { code: "H7", name: "Black", hex: "#000000", beads: 79 },
-  { code: "G7", name: "Cinnamon Brown", hex: "#985A42", beads: 62 },
-  { code: "H15", name: "Blue Gray", hex: "#A7B5BF", beads: 33 },
-  { code: "G20", name: "Burnt Orange", hex: "#B45D3B", beads: 28 },
-  { code: "C23", name: "Ice Blue", hex: "#D9F1F2", beads: 27 },
-  { code: "M15", name: "Medium Gray", hex: "#8D8D8C", beads: 17 },
-  { code: "F11", name: "Deep Cocoa", hex: "#72291F", beads: 16 },
-  { code: "F8", name: "Cherry Red", hex: "#C50035", beads: 16 },
-  { code: "F7", name: "Berry", hex: "#8A183A", beads: 8 },
+const taotieColors: PatternColor[] = [
+  { code: "A", name: "Outline Black", hex: "#101712", beads: 1735 },
+  { code: "B", name: "Dark Green", hex: "#075339", beads: 624 },
+  { code: "C", name: "Forest Green", hex: "#126447", beads: 823 },
+  { code: "D", name: "Grass Green", hex: "#8CAB3F", beads: 1176 },
+  { code: "E", name: "Light Green", hex: "#B5C95C", beads: 32 },
+  { code: "F", name: "Vermilion", hex: "#EE2815", beads: 415 },
+  { code: "G", name: "Orange", hex: "#FF851B", beads: 214 },
+  { code: "H", name: "Dark Red", hex: "#830E14", beads: 45 },
+  { code: "I", name: "Bright Yellow", hex: "#FFF044", beads: 66 },
+  { code: "J", name: "Cream Yellow", hex: "#FFE797", beads: 207 },
+  { code: "K", name: "Brown", hex: "#855738", beads: 272 },
+  { code: "L", name: "Khaki", hex: "#C5AF67", beads: 90 },
 ];
 
 const mock = (
@@ -107,24 +106,24 @@ const mock = (
 
 export const patterns: Pattern[] = [
   {
-    slug: "cherry-chip-cupcake",
-    title: "Cherry Chip Cupcake Fuse Bead Pattern",
-    category: "Food",
-    categorySlug: "food",
-    description:
-      "A sweet cherry-topped cupcake with creamy frosting, chocolate chips, and a warm striped wrapper. The numbered 36 × 36 chart includes a complete color key and bead counts.",
-    previewImage: "/downloads/cherry-chip-cupcake-pattern.jpg",
-    downloadImage: "/downloads/cherry-chip-cupcake-pattern.jpg",
-    downloadPdf: "/downloads/cherry-chip-cupcake-pattern.pdf",
-    gridWidth: 36,
-    gridHeight: 36,
-    colors: cupcakeColors,
-    totalBeads: 1296,
-    difficulty: "Intermediate",
-    estimatedSize: "18 × 18 cm with 5 mm beads",
-    featured: true,
+    slug: "taotie",
+    title: "Taotie Fuse Bead Pattern",
+    category: "Chinese Style",
+    categorySlug: "chinese-style",
+    description: "An original Taotie, rebuilt as a subject-only 120 × 110 fuse bead mosaic. The English printable chart includes an overview, color key, counts, and nine coordinate sections.",
+    previewImage: "/images/patterns/taotie-preview.png",
+    downloadImage: "/downloads/taotie-bead-pattern.jpg",
+    downloadPdf: "/downloads/taotie-bead-pattern.pdf",
+    gridWidth: 120,
+    gridHeight: 110,
+    colors: taotieColors,
+    totalBeads: 5699,
+    difficulty: "Advanced",
+    estimatedSize: "60 × 55 cm with 5 mm beads",
+    featured: false,
+    rightsStatus: "original",
     status: "published",
-    art: "cupcake",
+    art: "phoenix",
   },
   mock("moonlit-dragon", "Moonlit Dragon Pattern", "Fantasy", "fantasy", "dragon", 38, 34, "Intermediate", true),
   mock("paper-cut-phoenix", "Paper-cut Phoenix Pattern", "Chinese Style", "chinese-style", "phoenix", 42, 38, "Intermediate", true),

@@ -28,6 +28,7 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
     ] },
   };
   const liveDownloads = pattern.downloadImage !== "#";
+  const livePdf = pattern.downloadPdf !== "#";
   return (
     <article className="pattern-detail shell">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -37,7 +38,7 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
         <div className="detail-preview"><PatternVisual art={pattern.art} image={pattern.previewImage || undefined} label={pattern.title} priority /></div>
         <aside className="detail-panel">
           <section className="spec-panel"><h2>Pattern specs</h2><dl className="spec-list"><div><dt>Grid size</dt><dd>{pattern.gridWidth} × {pattern.gridHeight}</dd></div><div><dt>Colors</dt><dd>{pattern.colors.length}</dd></div><div><dt>Total beads</dt><dd>{pattern.totalBeads.toLocaleString("en-US")}</dd></div><div><dt>Difficulty</dt><dd>{pattern.difficulty}</dd></div><div><dt>Finished size</dt><dd>{pattern.estimatedSize}</dd></div></dl></section>
-          <section className="download-panel"><h2>Download pattern</h2><p>{liveDownloads ? "Download the free JPG pattern to keep nearby while building." : "This free JPG pattern will be added with the final artwork."}</p><div className="download-actions">{liveDownloads ? <MosaicDownloadButton href={pattern.downloadImage} filename={`${pattern.slug}-pattern.jpg`} /> : <span className="download-button" aria-disabled="true">Download unavailable</span>}</div><p className={styles.personalUse}>Free for personal craft use.</p></section>
+          <section className="download-panel"><h2>Download pattern</h2><p>{liveDownloads ? "Download the free chart image or the complete printable PDF." : "This free pattern will be added with the final artwork."}</p><div className="download-actions">{liveDownloads ? <MosaicDownloadButton href={pattern.downloadImage} filename={`${pattern.slug}-pattern.jpg`} /> : <span className="download-button" aria-disabled="true">Download unavailable</span>}{livePdf ? <a className="download-button" href={pattern.downloadPdf} download>Download PDF</a> : null}</div><p className={styles.personalUse}>Free for personal craft use.</p></section>
           <section className="color-panel"><p className="eyebrow">Build note</p><p className="detail-deck">Counts are a planning guide. Keep a small reserve of each shade for substitutions and repairs.</p></section>
         </aside>
       </div>

@@ -46,4 +46,4 @@ The build generates `.wrangler/deploy/config.json`, which redirects deployment t
 
 Patterns live in `data/patterns.ts`. Each record contains routing, preview, JPG/PDF download paths, dimensions, palette, bead count, difficulty, status, and feature flags. Add final JPG/PDF files under `public/` and update one record to publish another pattern.
 
-The current Celestial Deer example uses a lightweight WebP on listing pages and real JPG/PDF downloads on its detail page. Other entries are clearly structured mock content with CSS mosaic artwork, ready to be replaced by final assets.
+The current Taotie release appears in the Chinese Collection with its subject preview and real JPG/PDF downloads. Other entries are clearly structured mock content with CSS mosaic artwork, ready to be replaced by final assets.
