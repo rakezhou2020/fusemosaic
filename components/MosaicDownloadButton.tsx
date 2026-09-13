@@ -52,7 +52,6 @@ export function MosaicDownloadButton({ href, filename }: { href: string; filenam
   const [phase, setPhase] = useState<Phase>("idle");
   const [reducedMotion, setReducedMotion] = useState(false);
   const pendingDownload = useRef<string | null>(null);
-  const restoreTimer = useRef<number | null>(null);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -99,19 +98,14 @@ export function MosaicDownloadButton({ href, filename }: { href: string; filenam
       pendingDownload.current = null;
       window.setTimeout(() => URL.revokeObjectURL(url), 0);
     }
-    restoreTimer.current = window.setTimeout(() => setPhase("idle"), reducedMotion ? 350 : 1150);
-    return () => {
-      if (restoreTimer.current) window.clearTimeout(restoreTimer.current);
-    };
-  }, [filename, phase, reducedMotion]);
+  }, [filename, phase]);
 
   useEffect(() => () => {
     if (pendingDownload.current) URL.revokeObjectURL(pendingDownload.current);
-    if (restoreTimer.current) window.clearTimeout(restoreTimer.current);
   }, []);
 
   async function downloadPattern() {
-    if (phase !== "idle") return;
+    if (phase === "loading" || phase === "settling") return;
     setPhase("loading");
     try {
       const response = await fetch(href);
@@ -124,7 +118,7 @@ export function MosaicDownloadButton({ href, filename }: { href: string; filenam
   }
 
   return (
-    <button className={styles.button} type="button" onClick={downloadPattern} disabled={phase !== "idle"} aria-label="Download free JPG pattern" aria-busy={phase !== "idle"}>
+    <button className={styles.button} type="button" onClick={downloadPattern} disabled={phase === "loading" || phase === "settling"} aria-label="Download free JPG pattern" aria-busy={phase === "loading" || phase === "settling"}>
       <span className={styles.label} aria-hidden="true">Download JPG</span>
       <span className={styles.strip} aria-hidden="true">
         {(phase === "idle" ? idleCells : cells).map((color, index) => (
