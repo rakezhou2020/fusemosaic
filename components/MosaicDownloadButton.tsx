@@ -125,6 +125,7 @@ export function MosaicDownloadButton({ href, filename }: { href: string; filenam
 
   return (
     <button className={styles.button} type="button" onClick={downloadPattern} disabled={phase !== "idle"} aria-label="Download free JPG pattern" aria-busy={phase !== "idle"}>
+      <span className={styles.label} aria-hidden="true">Download JPG</span>
       <span className={styles.strip} aria-hidden="true">
         {(phase === "idle" ? idleCells : cells).map((color, index) => (
           <span className={`${styles.cell} ${phase === "loading" || phase === "settling" ? styles.moving : ""}`} key={`${columns}-${index}`} style={{ backgroundColor: BRAND_COLORS[color] }} />
