@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/breadcrumb";
+import { MosaicDownloadButton } from "@/components/MosaicDownloadButton";
 import { PatternCard } from "@/components/pattern-card";
 import { PatternVisual } from "@/components/pattern-visual";
 import { publicPattern, publicPatterns } from "@/lib/public-patterns";
@@ -35,7 +36,7 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
         <div className="detail-preview"><PatternVisual art={pattern.art} image={pattern.previewImage || undefined} label={pattern.title} priority /></div>
         <aside className="detail-panel">
           <section className="spec-panel"><h2>Pattern specs</h2><dl className="spec-list"><div><dt>Grid size</dt><dd>{pattern.gridWidth} × {pattern.gridHeight}</dd></div><div><dt>Colors</dt><dd>{pattern.colors.length}</dd></div><div><dt>Total beads</dt><dd>{pattern.totalBeads.toLocaleString("en-US")}</dd></div><div><dt>Difficulty</dt><dd>{pattern.difficulty}</dd></div><div><dt>Finished size</dt><dd>{pattern.estimatedSize}</dd></div></dl></section>
-          <section className="download-panel"><h2>Download pattern</h2><p>{liveDownloads ? "Download the free JPG pattern to keep nearby while building." : "This free JPG pattern will be added with the final artwork."}</p><div className="download-actions"><a className="download-button" href={pattern.downloadImage} download={liveDownloads ? `${pattern.slug}-pattern.jpg` : undefined} aria-disabled={!liveDownloads}>Download free JPG <span>↓</span></a></div></section>
+          <section className="download-panel"><h2>Download pattern</h2><p>{liveDownloads ? "Download the free JPG pattern to keep nearby while building." : "This free JPG pattern will be added with the final artwork."}</p><div className="download-actions">{liveDownloads ? <MosaicDownloadButton href={pattern.downloadImage} filename={`${pattern.slug}-pattern.jpg`} /> : <span className="download-button" aria-disabled="true">Download unavailable</span>}</div></section>
           <section className="color-panel"><p className="eyebrow">Build note</p><p className="detail-deck">Counts are a planning guide. Keep a small reserve of each shade for substitutions and repairs.</p></section>
         </aside>
       </div>

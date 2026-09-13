@@ -1,0 +1,46 @@
+.button {
+  align-items: center;
+  background: #26231f;
+  border: 0;
+  color: #f7f3eb;
+  cursor: pointer;
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  min-height: 76px;
+  padding: 14px 18px;
+  transition: background-color 160ms ease, opacity 160ms ease;
+  width: min(100%, 510px);
+}
+
+.button:hover:not(:disabled), .button:focus-visible { background: #35312c; }
+.button:focus-visible { outline: 3px solid #ed5c50; outline-offset: 3px; }
+.button:disabled { cursor: wait; }
+
+.strip {
+  display: grid;
+  flex: 1;
+  gap: 4px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: repeat(3, 13px);
+  max-width: 430px;
+}
+
+.cell { aspect-ratio: 1; border-radius: 0; display: block; min-width: 0; transition: background-color 75ms linear, transform 75ms linear; }
+.moving { animation: mosaic-shift 150ms steps(2, end) infinite alternate; }
+.cell:nth-child(3n) { animation-delay: 35ms; }
+.cell:nth-child(4n) { animation-delay: 70ms; }
+.arrow { color: #f7f3eb; font-size: 18px; line-height: 1; }
+.status { clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
+
+@media (max-width: 900px) { .strip { grid-template-columns: repeat(10, minmax(0, 1fr)); } }
+@media (max-width: 560px) {
+  .button { gap: 10px; min-height: 70px; padding: 13px 14px; }
+  .strip { gap: 3px; grid-template-columns: repeat(8, minmax(0, 1fr)); grid-template-rows: repeat(3, 12px); }
+}
+@media (prefers-reduced-motion: reduce) { .button, .cell { transition-duration: 1ms; } }
+
+@keyframes mosaic-shift {
+  from { transform: translate(-1px, 1px); }
+  to { transform: translate(1px, -1px); }
+}
