@@ -1,0 +1,12 @@
+.rightsNote {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+  margin-top: 20px;
+}
+
+.personalUse {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 10px;
+}

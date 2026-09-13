@@ -23,12 +23,14 @@ export type Pattern = {
   difficulty: Difficulty;
   estimatedSize: string;
   featured: boolean;
+  rightsStatus?: "original" | "public-domain" | "fan-made" | "licensed" | "review";
+  franchise?: string;
+  rightsNote?: string;
   status: "published" | "coming-soon";
   art: ArtVariant;
 };
 
 export type ArtVariant =
-  | "deer"
   | "dragon"
   | "phoenix"
   | "fox"
@@ -37,7 +39,8 @@ export type ArtVariant =
   | "berry"
   | "mushroom"
   | "dinosaur"
-  | "lantern";
+  | "lantern"
+  | "cupcake";
 
 export type Category = {
   slug: string;
@@ -57,21 +60,19 @@ const sharedColors: PatternColor[] = [
   { code: "F", name: "Slate Blue", hex: "#5987a6", beads: 41 },
 ];
 
-const deerColors: PatternColor[] = [
-  { code: "A", name: "Golden Brown", hex: "#CB991C", beads: 154 },
-  { code: "B", name: "Brown", hex: "#8D7452", beads: 75 },
-  { code: "C", name: "Taupe", hex: "#AA926A", beads: 133 },
-  { code: "D", name: "Cream", hex: "#FDEEB9", beads: 691 },
-  { code: "E", name: "Olive", hex: "#C4B187", beads: 167 },
-  { code: "F", name: "Soft Gold", hex: "#DFCD9D", beads: 207 },
-  { code: "G", name: "Burnished Gold", hex: "#B48130", beads: 25 },
-  { code: "H", name: "Leaf Green", hex: "#6B9555", beads: 26 },
-  { code: "I", name: "Brick Red", hex: "#B25B42", beads: 25 },
-  { code: "J", name: "Teal", hex: "#16A49E", beads: 32 },
-  { code: "K", name: "Warm Gray", hex: "#928097", beads: 44 },
-  { code: "L", name: "Coral Red", hex: "#E45247", beads: 42 },
-  { code: "M", name: "Mauve", hex: "#9F7ECC", beads: 29 },
-  { code: "N", name: "Sky Blue", hex: "#87BCCD", beads: 11 },
+const cupcakeColors: PatternColor[] = [
+  { code: "H2", name: "White", hex: "#FFFFFF", beads: 799 },
+  { code: "M4", name: "Pale Blush", hex: "#F2E0D5", beads: 117 },
+  { code: "G8", name: "Dark Chocolate", hex: "#53301F", beads: 94 },
+  { code: "H7", name: "Black", hex: "#000000", beads: 79 },
+  { code: "G7", name: "Cinnamon Brown", hex: "#985A42", beads: 62 },
+  { code: "H15", name: "Blue Gray", hex: "#A7B5BF", beads: 33 },
+  { code: "G20", name: "Burnt Orange", hex: "#B45D3B", beads: 28 },
+  { code: "C23", name: "Ice Blue", hex: "#D9F1F2", beads: 27 },
+  { code: "M15", name: "Medium Gray", hex: "#8D8D8C", beads: 17 },
+  { code: "F11", name: "Deep Cocoa", hex: "#72291F", beads: 16 },
+  { code: "F8", name: "Cherry Red", hex: "#C50035", beads: 16 },
+  { code: "F7", name: "Berry", hex: "#8A183A", beads: 8 },
 ];
 
 const mock = (
@@ -106,24 +107,24 @@ const mock = (
 
 export const patterns: Pattern[] = [
   {
-    slug: "celestial-deer",
-    title: "Celestial Deer Fuse Bead Pattern",
-    category: "Fantasy",
-    categorySlug: "fantasy",
+    slug: "cherry-chip-cupcake",
+    title: "Cherry Chip Cupcake Fuse Bead Pattern",
+    category: "Food",
+    categorySlug: "food",
     description:
-      "A graceful celestial deer with a warm ivory body, golden antlers, and a jewel-toned mosaic saddle. Built as a detailed large-format pattern.",
-    previewImage: "/images/patterns/celestial-deer-large-preview.webp",
-    downloadImage: "/downloads/celestial-deer-pattern.jpg",
-    downloadPdf: "/downloads/celestial-deer-pattern.pdf",
-    gridWidth: 64,
-    gridHeight: 90,
-    colors: deerColors,
-    totalBeads: 1661,
+      "A sweet cherry-topped cupcake with creamy frosting, chocolate chips, and a warm striped wrapper. The numbered 36 × 36 chart includes a complete color key and bead counts.",
+    previewImage: "/downloads/cherry-chip-cupcake-pattern.jpg",
+    downloadImage: "/downloads/cherry-chip-cupcake-pattern.jpg",
+    downloadPdf: "/downloads/cherry-chip-cupcake-pattern.pdf",
+    gridWidth: 36,
+    gridHeight: 36,
+    colors: cupcakeColors,
+    totalBeads: 1296,
     difficulty: "Intermediate",
-    estimatedSize: "32 × 45 cm with 5 mm beads",
+    estimatedSize: "18 × 18 cm with 5 mm beads",
     featured: true,
     status: "published",
-    art: "deer",
+    art: "cupcake",
   },
   mock("moonlit-dragon", "Moonlit Dragon Pattern", "Fantasy", "fantasy", "dragon", 38, 34, "Intermediate", true),
   mock("paper-cut-phoenix", "Paper-cut Phoenix Pattern", "Chinese Style", "chinese-style", "phoenix", 42, 38, "Intermediate", true),

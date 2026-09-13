@@ -1,0 +1,8 @@
+.body ol,
+.body ul {
+  color: #5f5a53;
+  margin-top: 13px;
+  padding-left: 22px;
+}
+
+.body li + li { margin-top: 7px; }

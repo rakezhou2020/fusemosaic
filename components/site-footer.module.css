@@ -1,0 +1,8 @@
+.grid {
+  gap: 36px;
+  grid-template-columns: 1.5fr repeat(4, 1fr);
+}
+
+@media (max-width: 720px) {
+  .grid { grid-template-columns: 1fr 1fr; gap: 35px 25px; }
+}

@@ -5,6 +5,7 @@ import { MosaicDownloadButton } from "@/components/MosaicDownloadButton";
 import { PatternCard } from "@/components/pattern-card";
 import { PatternVisual } from "@/components/pattern-visual";
 import { publicPattern, publicPatterns } from "@/lib/public-patterns";
+import styles from "./page.module.css";
 
 export async function generateStaticParams() { return (await publicPatterns()).map(({ slug }) => ({ slug })); }
 
@@ -36,11 +37,12 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
         <div className="detail-preview"><PatternVisual art={pattern.art} image={pattern.previewImage || undefined} label={pattern.title} priority /></div>
         <aside className="detail-panel">
           <section className="spec-panel"><h2>Pattern specs</h2><dl className="spec-list"><div><dt>Grid size</dt><dd>{pattern.gridWidth} × {pattern.gridHeight}</dd></div><div><dt>Colors</dt><dd>{pattern.colors.length}</dd></div><div><dt>Total beads</dt><dd>{pattern.totalBeads.toLocaleString("en-US")}</dd></div><div><dt>Difficulty</dt><dd>{pattern.difficulty}</dd></div><div><dt>Finished size</dt><dd>{pattern.estimatedSize}</dd></div></dl></section>
-          <section className="download-panel"><h2>Download pattern</h2><p>{liveDownloads ? "Download the free JPG pattern to keep nearby while building." : "This free JPG pattern will be added with the final artwork."}</p><div className="download-actions">{liveDownloads ? <MosaicDownloadButton href={pattern.downloadImage} filename={`${pattern.slug}-pattern.jpg`} /> : <span className="download-button" aria-disabled="true">Download unavailable</span>}</div></section>
+          <section className="download-panel"><h2>Download pattern</h2><p>{liveDownloads ? "Download the free JPG pattern to keep nearby while building." : "This free JPG pattern will be added with the final artwork."}</p><div className="download-actions">{liveDownloads ? <MosaicDownloadButton href={pattern.downloadImage} filename={`${pattern.slug}-pattern.jpg`} /> : <span className="download-button" aria-disabled="true">Download unavailable</span>}</div><p className={styles.personalUse}>Free for personal craft use.</p></section>
           <section className="color-panel"><p className="eyebrow">Build note</p><p className="detail-deck">Counts are a planning guide. Keep a small reserve of each shade for substitutions and repairs.</p></section>
         </aside>
       </div>
       <section className="color-guide-section"><p className="eyebrow">Palette</p><h2>Color guide</h2><div className="color-grid">{pattern.colors.map((color) => <div className="color-chip" key={`${color.code}-${color.hex}`}><i style={{ backgroundColor: color.hex }} /><span><strong>{color.name ? `${color.code} · ${color.name}` : color.code}</strong><small>{color.hex}</small></span><span>{color.beads} beads</span></div>)}</div></section>
+      {pattern.rightsStatus === "fan-made" ? <p className={styles.rightsNote}>Unofficial fan-made pattern. Not affiliated with or endorsed by the respective rights holder.</p> : null}
       <section className="related-section"><p className="eyebrow">Keep exploring</p><h2>Related patterns</h2><div className="pattern-grid">{related.map((item) => <PatternCard pattern={item} key={item.slug} />)}</div></section>
     </article>
   );

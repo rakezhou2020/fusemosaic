@@ -126,9 +126,16 @@ export function PatternEditor({ pattern, categories }: { pattern: Pattern; categ
         <label>Rights<select value={String(values.rights_status ?? "review")} onChange={(event) => update("rights_status", event.target.value)}>
           <option value="review">Review</option><option value="approved">Approved</option><option value="blocked">Blocked</option>
         </select></label>
+        <label>Content rights status<select value={String(values.content_rights_status ?? "")} onChange={(event) => update("content_rights_status", event.target.value || null)}>
+          <option value="">Not set</option><option value="original">Original</option><option value="public-domain">Public domain</option><option value="fan-made">Fan-made</option><option value="licensed">Licensed</option><option value="review">Review</option>
+        </select></label>
         <label>Status<select value={String(values.status ?? "draft")} onChange={(event) => update("status", event.target.value)}>
           <option value="draft">Draft</option><option value="published">Published</option><option value="hidden">Hidden</option><option value="removed">Removed</option>
         </select></label>
+      </div>
+      <div className="rake-grid">
+        <label>Franchise / subject source (optional)<input value={String(values.franchise ?? "")} onChange={(event) => update("franchise", event.target.value)} /></label>
+        <label>Rights note (optional)<input value={String(values.rights_note ?? "")} onChange={(event) => update("rights_note", event.target.value)} /></label>
       </div>
       <div className="rake-featured">
         <div><b>Featured</b><p>Show this pattern in featured recommendations when the front page uses featured items.</p></div>

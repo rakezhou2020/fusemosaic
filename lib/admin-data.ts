@@ -2,6 +2,7 @@ import { getFuseMosaicEnv } from "@/lib/cloudflare";
 
 export type PatternStatus = "draft" | "published" | "hidden" | "removed";
 export type RightsStatus = "review" | "approved" | "blocked";
+export type ContentRightsStatus = "original" | "public-domain" | "fan-made" | "licensed" | "review";
 export type CategoryStatus = "active" | "hidden";
 
 export type PatternRecord = {
@@ -9,6 +10,7 @@ export type PatternRecord = {
   preview_url: string | null; download_url: string | null; original_url: string | null;
   grid_width: number | null; grid_height: number | null; colors: string; total_beads: number | null;
   difficulty: string | null; estimated_size: string | null; status: PatternStatus; rights_status: RightsStatus;
+  content_rights_status: ContentRightsStatus | null; franchise: string | null; rights_note: string | null;
   featured: number; published_at: string | null; created_at: string; updated_at: string; removed_at: string | null;
   seo_title: string | null; seo_description: string | null; category_name?: string | null; category_slug?: string | null;
 };
