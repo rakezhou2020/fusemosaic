@@ -38,7 +38,8 @@ export function PremiumPurchase({ slug }: { slug: string }) {
   }
 
   async function beginCheckout() {
-    const checkoutWindow = window.open("", "_blank", "noopener,noreferrer");
+    const checkoutWindow = window.open("", "_blank");
+    if (checkoutWindow) checkoutWindow.opener = null;
     setStatus("creating");
     try {
       const response = await fetch("/api/payment/create", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug }) });
