@@ -1,6 +1,7 @@
 import { audit, db } from "@/lib/admin-data";
 import { requireAdminRequest } from "@/lib/admin-auth";
 import { getFuseMosaicEnv } from "@/lib/cloudflare";
+import { createWatermarkedDownload, watermarkedDownloadKey } from "@/lib/watermark";
 
 const allowed = new Map([["image/jpeg", "jpg"], ["image/png", "png"], ["image/webp", "webp"]]);
 const maxBytes = 20 * 1024 * 1024;
@@ -26,11 +27,11 @@ export async function POST(request: Request) {
     const extension = allowed.get(file.type); if (!extension || file.size === 0 || file.size > maxBytes) return Response.json({ error: `${file.name}: only JPG, PNG or WebP files up to 20 MB are allowed` }, { status: 400 });
     const id = crypto.randomUUID(); const slug = slugify(file.name); const suffix = crypto.randomUUID().slice(0, 6); const uniqueSlug = `${slug}-${suffix}`; const base = `patterns/${id}`; const original = await file.arrayBuffer();
     try {
-      const preview = await transformed(original, 1200, 1500, "image/webp", 80); const download = await transformed(original, 1600, 2000, "image/jpeg", 90);
+      const preview = await transformed(original, 1200, 1500, "image/webp", 80); const download = await createWatermarkedDownload(images, original);
       await Promise.all([
         bucket.put(`${base}/original.${extension}`, original, { httpMetadata: { contentType: file.type } }),
         bucket.put(`${base}/preview.webp`, preview.body, { httpMetadata: { contentType: "image/webp", cacheControl: "public, max-age=31536000, immutable" } }),
-        bucket.put(`${base}/pattern.jpg`, download.body, { httpMetadata: { contentType: "image/jpeg", cacheControl: "public, max-age=31536000, immutable" } }),
+        bucket.put(`${base}/${watermarkedDownloadKey}`, download.body, { httpMetadata: { contentType: "image/jpeg", cacheControl: "public, max-age=31536000, immutable" } }),
       ]);
       const title = file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ");
       const analysis = analyses[index]; await db().prepare("INSERT INTO patterns (id, slug, title, preview_url, download_url, original_url, grid_width, grid_height, colors, total_beads, status, rights_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft', 'review')").bind(id, uniqueSlug, title, `/api/media/${id}/preview`, `/api/media/${id}/download`, `/api/media/${id}/original`, analysis?.gridWidth ?? null, analysis?.gridHeight ?? null, analysis ? JSON.stringify(analysis.colors) : "[]", analysis?.totalBeads ?? null).run();

@@ -1,16 +1,156 @@
 "use client";
+
 import { useState } from "react";
 import { analyseFuseBeadChart } from "@/lib/fuse-bead-analysis";
 
 type Pattern = Record<string, unknown>;
-function gridDetails(width: unknown, height: unknown) { const columns = typeof width === "number" && Number.isInteger(width) && width > 0 ? width : null; const rows = typeof height === "number" && Number.isInteger(height) && height > 0 ? height : null; if (!columns || !rows) return null; const longestSide = Math.max(columns, rows); const scale = longestSide <= 30 ? { label: "Small", difficulty: "Easy", suitable: "Fruit, icons and small animal portraits" } : longestSide <= 50 ? { label: "Medium", difficulty: "Intermediate", suitable: "Complete animals and simple characters" } : longestSide <= 70 ? { label: "Large", difficulty: "Advanced", suitable: "Detailed characters and backgrounds" } : { label: "Extra large", difficulty: "Expert", suitable: "Poster-scale work" }; const centimetres = (value: number) => `${(value * 0.5).toFixed(1).replace(/\.0$/, "")}`; return { ...scale, estimatedSize: `${scale.label} · ${centimetres(columns)} × ${centimetres(rows)} cm (5 mm beads)` }; }
-function colorsTotal(value: unknown) { try { const colors = JSON.parse(typeof value === "string" ? value : "[]") as { beads?: unknown }[]; return Array.isArray(colors) && colors.every((color) => typeof color.beads === "number" && Number.isInteger(color.beads) && color.beads > 0) ? colors.reduce((sum, color) => sum + Number(color.beads), 0) : null; } catch { return null; } }
-function colorsCount(value: unknown) { try { const colors = JSON.parse(typeof value === "string" ? value : "[]"); return Array.isArray(colors) ? colors.length : null; } catch { return null; } }
 
-export function PatternEditor({ pattern, categories }: { pattern: Pattern; categories: { id:string; name:string }[] }) {
-  const [message, setMessage] = useState(""); const [values, setValues] = useState(pattern); const details = gridDetails(values.grid_width, values.grid_height); const total = colorsTotal(values.colors); const colorCount = colorsCount(values.colors);
-  const update = (key:string, value:unknown) => setValues((old) => ({ ...old, [key]:value })); const gridValue = (value: string) => value === "" ? null : Number(value);
-  async function save(status?: string) { const response=await fetch(`/api/rake/patterns/${pattern.id}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({...values,status:status ?? values.status,total_beads:total ?? 0,estimated_size:details?.estimatedSize ?? values.estimated_size,difficulty:details?.difficulty ?? values.difficulty})}); const json=await response.json() as Pattern & { error?: string }; setMessage(response.ok ? "Saved." : json.error ?? "Save failed."); if(response.ok)setValues(json); }
-  async function reanalyze() { const width = Number(values.grid_width); const height = Number(values.grid_height); const original = typeof values.original_url === "string" ? values.original_url : null; if (!original || !Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1) { setMessage("Enter valid grid dimensions before reanalysing colours."); return; } setMessage("Analysing chart colours…"); try { const response = await fetch(original); if (!response.ok) throw new Error("The original image could not be read."); const result = await analyseFuseBeadChart(await response.blob(), width, height); setValues((old) => ({ ...old, colors: JSON.stringify(result.colors, null, 2), total_beads: result.totalBeads })); setMessage(`Generated ${result.colors.length} colours and ${result.totalBeads.toLocaleString("en-US")} beads. Click Save draft to store it.`); } catch (error) { setMessage(error instanceof Error ? `Colour analysis failed: ${error.message}` : "Colour analysis failed. Enter Colors JSON manually."); } }
-  return <div className="rake-form"><p>{message}</p>{values.preview_url ? <img className="rake-preview" src={String(values.preview_url)} alt="Preview" /> : null}<label>Title<input value={String(values.title ?? "")} onChange={(event)=>update("title",event.target.value)} /></label><label>Slug<input value={String(values.slug ?? "")} onChange={(event)=>update("slug",event.target.value)} /></label><label>Description<textarea value={String(values.description ?? "")} onChange={(event)=>update("description",event.target.value)} /></label><label>Category<select value={String(values.category_id ?? "")} onChange={(event)=>update("category_id",event.target.value || null)}><option value="">Uncategorized</option>{categories.map((category)=><option key={category.id} value={category.id}>{category.name}</option>)}</select></label><div className="rake-grid"><label>Grid width<input type="number" min="1" value={String(values.grid_width ?? "")} onChange={(event)=>update("grid_width",gridValue(event.target.value))} /></label><label>Grid height<input type="number" min="1" value={String(values.grid_height ?? "")} onChange={(event)=>update("grid_height",gridValue(event.target.value))} /></label><label>Total beads<input type="number" value={String(total ?? 0)} readOnly /></label></div>{details ? <p className="rake-notice">Auto: <b>{details.label}</b> · {details.estimatedSize} · {details.difficulty} · Best for {details.suitable}.</p> : <p className="rake-notice">Enter both grid dimensions to calculate the finished size.</p>}<label>Difficulty<input value={String(details?.difficulty ?? values.difficulty ?? "")} readOnly /></label><label>Estimated size<input value={String(details?.estimatedSize ?? values.estimated_size ?? "")} readOnly /></label><label>Colors JSON — automatically generated, editable<textarea value={String(values.colors ?? "[]")} onChange={(event)=>update("colors",event.target.value)} /></label><p className="rake-notice">Colors: {colorCount ?? "invalid JSON"} · Total beads: {total ?? "needs valid Colors JSON"}</p><label>SEO title<input value={String(values.seo_title ?? "")} onChange={(event)=>update("seo_title",event.target.value)} /></label><label>SEO description<textarea value={String(values.seo_description ?? "")} onChange={(event)=>update("seo_description",event.target.value)} /></label><div className="rake-grid"><label>Rights<select value={String(values.rights_status ?? "review")} onChange={(event)=>update("rights_status",event.target.value)}><option value="review">Review</option><option value="approved">Approved</option><option value="blocked">Blocked</option></select></label><label>Status<select value={String(values.status ?? "draft")} onChange={(event)=>update("status",event.target.value)}><option value="draft">Draft</option><option value="published">Published</option><option value="hidden">Hidden</option><option value="removed">Removed</option></select></label></div><label><input type="checkbox" checked={Boolean(values.featured)} onChange={(event)=>update("featured",event.target.checked)} /> Featured</label><div className="rake-actions"><button type="button" onClick={reanalyze}>Reanalyze colors</button><button type="button" onClick={()=>save()}>Save draft</button><button type="button" className="rake-button--muted" onClick={()=>save("published")}>Publish</button><button type="button" className="rake-button--muted" onClick={()=>save("hidden")}>Hide</button><button type="button" className="rake-button--muted" onClick={()=>{if(confirm("Mark this pattern removed?"))save("removed")}}>Remove</button>{values.download_url ? <a href={String(values.download_url)}>Download JPG</a> : null}</div></div>;
+function gridDetails(width: unknown, height: unknown) {
+  const columns = typeof width === "number" && Number.isInteger(width) && width > 0 ? width : null;
+  const rows = typeof height === "number" && Number.isInteger(height) && height > 0 ? height : null;
+  if (!columns || !rows) return null;
+  const longestSide = Math.max(columns, rows);
+  const scale = longestSide <= 30
+    ? { label: "Small", difficulty: "Easy", suitable: "Fruit, icons and small animal portraits" }
+    : longestSide <= 50
+      ? { label: "Medium", difficulty: "Intermediate", suitable: "Complete animals and simple characters" }
+      : longestSide <= 70
+        ? { label: "Large", difficulty: "Advanced", suitable: "Detailed characters and backgrounds" }
+        : { label: "Extra large", difficulty: "Expert", suitable: "Poster-scale work" };
+  const centimetres = (value: number) => `${(value * 0.5).toFixed(1).replace(/\.0$/, "")}`;
+  return { ...scale, estimatedSize: `${scale.label} · ${centimetres(columns)} × ${centimetres(rows)} cm (5 mm beads)` };
+}
+
+function colorsTotal(value: unknown) {
+  try {
+    const colors = JSON.parse(typeof value === "string" ? value : "[]") as { beads?: unknown }[];
+    return Array.isArray(colors) && colors.every((color) => typeof color.beads === "number" && Number.isInteger(color.beads) && color.beads > 0)
+      ? colors.reduce((sum, color) => sum + Number(color.beads), 0)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function colorsCount(value: unknown) {
+  try {
+    const colors = JSON.parse(typeof value === "string" ? value : "[]");
+    return Array.isArray(colors) ? colors.length : null;
+  } catch {
+    return null;
+  }
+}
+
+export function PatternEditor({ pattern, categories }: { pattern: Pattern; categories: { id: string; name: string }[] }) {
+  const [message, setMessage] = useState("");
+  const [values, setValues] = useState(pattern);
+  const details = gridDetails(values.grid_width, values.grid_height);
+  const total = colorsTotal(values.colors);
+  const colorCount = colorsCount(values.colors);
+  const update = (key: string, value: unknown) => setValues((old) => ({ ...old, [key]: value }));
+  const gridValue = (value: string) => value === "" ? null : Number(value);
+
+  async function save(status?: string) {
+    const response = await fetch(`/api/rake/patterns/${pattern.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...values,
+        status: status ?? values.status,
+        total_beads: total ?? 0,
+        estimated_size: details?.estimatedSize ?? values.estimated_size,
+        difficulty: details?.difficulty ?? values.difficulty,
+      }),
+    });
+    const json = await response.json() as Pattern & { error?: string };
+    setMessage(response.ok ? "Saved." : json.error ?? "Save failed.");
+    if (response.ok) setValues(json);
+  }
+
+  async function reanalyze() {
+    const width = Number(values.grid_width);
+    const height = Number(values.grid_height);
+    const original = typeof values.original_url === "string" ? values.original_url : null;
+    if (!original || !Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1) {
+      setMessage("Enter valid grid dimensions before reanalysing colours.");
+      return;
+    }
+    setMessage("Analysing chart colours…");
+    try {
+      const response = await fetch(original);
+      if (!response.ok) throw new Error("The original image could not be read.");
+      const result = await analyseFuseBeadChart(await response.blob(), width, height);
+      setValues((old) => ({ ...old, colors: JSON.stringify(result.colors, null, 2), total_beads: result.totalBeads }));
+      setMessage(`Generated ${result.colors.length} colours and ${result.totalBeads.toLocaleString("en-US")} beads. Click Save draft to store it.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? `Colour analysis failed: ${error.message}` : "Colour analysis failed. Enter Colors JSON manually.");
+    }
+  }
+
+  async function regenerateWatermark() {
+    setMessage("Generating the watermarked download…");
+    const response = await fetch(`/api/rake/patterns/${pattern.id}/watermark`, { method: "POST" });
+    const json = await response.json() as { download_url?: string; error?: string };
+    if (!response.ok) {
+      setMessage(json.error ?? "Watermark generation failed.");
+      return;
+    }
+    if (json.download_url) setValues((old) => ({ ...old, download_url: json.download_url }));
+    setMessage("Watermarked download generated. Review it below, then save if you changed other fields.");
+  }
+
+  return (
+    <div className="rake-form">
+      <p>{message}</p>
+      {values.preview_url ? <img className="rake-preview" src={String(values.preview_url)} alt="Preview" /> : null}
+      <label>Title<input value={String(values.title ?? "")} onChange={(event) => update("title", event.target.value)} /></label>
+      <label>Slug<input value={String(values.slug ?? "")} onChange={(event) => update("slug", event.target.value)} /></label>
+      <label>Description<textarea value={String(values.description ?? "")} onChange={(event) => update("description", event.target.value)} /></label>
+      <label>Category<select value={String(values.category_id ?? "")} onChange={(event) => update("category_id", event.target.value || null)}>
+        <option value="">Uncategorized</option>
+        {categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
+      </select></label>
+      <div className="rake-grid">
+        <label>Grid width<input type="number" min="1" value={String(values.grid_width ?? "")} onChange={(event) => update("grid_width", gridValue(event.target.value))} /></label>
+        <label>Grid height<input type="number" min="1" value={String(values.grid_height ?? "")} onChange={(event) => update("grid_height", gridValue(event.target.value))} /></label>
+        <label>Total beads<input type="number" value={String(total ?? 0)} readOnly /></label>
+      </div>
+      {details ? <p className="rake-notice">Auto: <b>{details.label}</b> · {details.estimatedSize} · {details.difficulty} · Best for {details.suitable}.</p> : <p className="rake-notice">Enter both grid dimensions to calculate the finished size.</p>}
+      <label>Difficulty<input value={String(details?.difficulty ?? values.difficulty ?? "")} readOnly /></label>
+      <label>Estimated size<input value={String(details?.estimatedSize ?? values.estimated_size ?? "")} readOnly /></label>
+      <label>Colors JSON — automatically generated, editable<textarea value={String(values.colors ?? "[]")} onChange={(event) => update("colors", event.target.value)} /></label>
+      <p className="rake-notice">Colors: {colorCount ?? "invalid JSON"} · Total beads: {total ?? "needs valid Colors JSON"}</p>
+      <label>SEO title<input value={String(values.seo_title ?? "")} onChange={(event) => update("seo_title", event.target.value)} /></label>
+      <label>SEO description<textarea value={String(values.seo_description ?? "")} onChange={(event) => update("seo_description", event.target.value)} /></label>
+      <div className="rake-grid">
+        <label>Rights<select value={String(values.rights_status ?? "review")} onChange={(event) => update("rights_status", event.target.value)}>
+          <option value="review">Review</option><option value="approved">Approved</option><option value="blocked">Blocked</option>
+        </select></label>
+        <label>Status<select value={String(values.status ?? "draft")} onChange={(event) => update("status", event.target.value)}>
+          <option value="draft">Draft</option><option value="published">Published</option><option value="hidden">Hidden</option><option value="removed">Removed</option>
+        </select></label>
+      </div>
+      <div className="rake-featured">
+        <div><b>Featured</b><p>Show this pattern in featured recommendations when the front page uses featured items.</p></div>
+        <label className="rake-switch">
+          <input type="checkbox" role="switch" aria-label="Feature this pattern" checked={Boolean(values.featured)} onChange={(event) => update("featured", event.target.checked)} />
+          <span className="rake-switch__track" aria-hidden="true"><span /></span>
+          <span className="rake-switch__state">{values.featured ? "On" : "Off"}</span>
+        </label>
+      </div>
+      <section className="rake-watermark">
+        <div><b>Watermarked download</b><p>The original remains private. This static JPG is the file users receive when they download.</p></div>
+        {values.download_url ? <img src={String(values.download_url)} alt="Watermarked download preview" /> : null}
+        <button type="button" onClick={regenerateWatermark}>Regenerate watermark</button>
+      </section>
+      <div className="rake-actions">
+        <button type="button" onClick={reanalyze}>Reanalyze colors</button>
+        <button type="button" onClick={() => save()}>Save draft</button>
+        <button type="button" className="rake-button--muted" onClick={() => save("published")}>Publish</button>
+        <button type="button" className="rake-button--muted" onClick={() => save("hidden")}>Hide</button>
+        <button type="button" className="rake-button--muted" onClick={() => { if (confirm("Mark this pattern removed?")) save("removed"); }}>Remove</button>
+        {values.download_url ? <a href={String(values.download_url)}>Download JPG</a> : null}
+      </div>
+    </div>
+  );
 }
