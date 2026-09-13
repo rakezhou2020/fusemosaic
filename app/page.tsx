@@ -2,7 +2,7 @@ import Link from "next/link";
 import { BrandMark } from "@/components/brand-mark";
 import { PatternCard } from "@/components/pattern-card";
 import { PatternVisual } from "@/components/pattern-visual";
-import { publicCategories, publicPatterns } from "@/lib/public-patterns";
+import { publicCategories, publicChineseCollection, publicPatterns } from "@/lib/public-patterns";
 
 const homeJsonLd = {
   "@context": "https://schema.org", "@type": "WebSite", name: "FuseMosaic", url: "https://fusemosaic.com",
@@ -11,7 +11,7 @@ const homeJsonLd = {
 };
 
 export default async function Home() {
-  const [categories, patterns] = await Promise.all([publicCategories(), publicPatterns()]);
+  const [categories, patterns, chineseCollection] = await Promise.all([publicCategories(), publicPatterns(), publicChineseCollection()]);
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }} />
@@ -61,8 +61,8 @@ export default async function Home() {
       <section className="chinese-feature shell" id="chinese">
         <div className="chinese-copy"><p className="eyebrow eyebrow--gold">Archive focus / East Asian forms</p><h2>Tradition,<br />translated into tiles.</h2><p>Dragons, phoenixes, mythical beasts, ancient characters and enduring motifs—redrawn for the measured language of fuse beads.</p><Link className="light-button" href="/chinese">Enter the collection <span aria-hidden="true">→</span></Link></div>
         <div className="chinese-mosaic">
-          {patterns.filter((pattern) => ["dragon", "phoenix", "lantern"].includes(pattern.art)).slice(0, 3).map((pattern, index) => (
-            <Link href={`/patterns/${pattern.slug}`} className={`chinese-art chinese-art--${index + 1}`} key={pattern.slug}><PatternVisual art={pattern.art} label={pattern.title} /><span>{pattern.title.replace(" Pattern", "")}</span></Link>
+          {chineseCollection.slice(0, 4).map((pattern) => (
+            <Link href={`/patterns/${pattern.slug}`} className="chinese-art" key={pattern.slug}><PatternVisual art={pattern.art} image={pattern.previewImage || undefined} label={pattern.title} /><span>{pattern.title.replace(" Pattern", "")}</span></Link>
           ))}
         </div>
       </section>

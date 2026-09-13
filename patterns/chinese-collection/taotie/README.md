@@ -2,7 +2,7 @@
 
 Dedicated Chinese Collection product. The previous name “Qilin” was incorrect.
 
-- Collection: `/chinese` (`chinese-style`)
+- Collection: paid `/chinese` (`chinese-collection`)
 - Grid: 120 columns x 110 rows
 - Palette: 12 custom letter codes; 5,699 beads
 - `pattern.json`: authoritative cell data and counts

@@ -7,7 +7,7 @@ export function PatternCard({ pattern }: { pattern: Pattern }) {
     <Link className="pattern-card" href={`/patterns/${pattern.slug}`}>
       <div className="pattern-card__image">
         <PatternVisual art={pattern.art} image={pattern.previewImage || undefined} label={pattern.title} />
-        <span className="free-badge">Free</span>
+        <span className="free-badge">{pattern.access === "paid" ? "Premium" : "Free"}</span>
       </div>
       <div className="pattern-card__body">
         <p className="pattern-card__category">{pattern.category}</p>

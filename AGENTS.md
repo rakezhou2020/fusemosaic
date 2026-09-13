@@ -10,4 +10,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Chinese Collection product assets
 
-Maintain Chinese Collection (`/chinese`, category `chinese-style`) products in `patterns/chinese-collection/<product-slug>/`. Read `patterns/chinese-collection/README.md` before updating this module. The approved mythical beast is 饕餮 / Taotie (`taotie`), not Qilin or Celestial Deer. It is a collection product, not a header or homepage hero image. Default pattern deliverables are English.
+Maintain Chinese Collection (`/chinese`, category `chinese-collection`) products in `patterns/chinese-collection/<product-slug>/`. Read `patterns/chinese-collection/README.md` before updating this module. The approved mythical beast is 饕餮 / Taotie (`taotie`), not Qilin or Celestial Deer. It is a standalone paid collection, excluded from free patterns and regular category browsing. The homepage collection panel shows up to four real released product thumbnails without placeholders. Default pattern deliverables are English.

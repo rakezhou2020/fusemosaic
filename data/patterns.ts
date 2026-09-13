@@ -1,4 +1,5 @@
 export type Difficulty = "Beginner" | "Easy" | "Intermediate" | "Advanced";
+export type PatternAccess = "free" | "paid";
 
 export type PatternColor = {
   code: string;
@@ -23,6 +24,7 @@ export type Pattern = {
   totalBeads: number;
   difficulty: Difficulty;
   estimatedSize: string;
+  access: PatternAccess;
   featured: boolean;
   rightsStatus?: "original" | "public-domain" | "fan-made" | "licensed" | "review";
   franchise?: string;
@@ -100,6 +102,7 @@ const mock = (
   totalBeads: Math.round(gridWidth * gridHeight * 0.43),
   difficulty,
   estimatedSize: `${(gridWidth * 0.5).toFixed(1)} × ${(gridHeight * 0.5).toFixed(1)} cm with 5 mm beads`,
+  access: "free",
   featured,
   status: "published",
   art,
@@ -109,33 +112,32 @@ export const patterns: Pattern[] = [
   {
     slug: "taotie",
     title: "Taotie Fuse Bead Pattern",
-    category: "Chinese Style",
-    categorySlug: "chinese-style",
+    category: "Chinese Collection",
+    categorySlug: "chinese-collection",
     description: "An original Taotie, rebuilt as a subject-only 120 × 110 fuse bead mosaic. The English printable chart includes an overview, color key, counts, and nine coordinate sections.",
     previewImage: "/images/patterns/taotie-finished-photo.png",
     detailImage: "/images/patterns/taotie-chart-detail.png",
     downloadImage: "#",
-    downloadPdf: "/downloads/taotie-bead-pattern.pdf",
+    downloadPdf: "#",
     gridWidth: 120,
     gridHeight: 110,
     colors: taotieColors,
     totalBeads: 5699,
     difficulty: "Advanced",
     estimatedSize: "60 × 55 cm with 5 mm beads",
+    access: "paid",
     featured: false,
     rightsStatus: "original",
     status: "published",
     art: "phoenix",
   },
   mock("moonlit-dragon", "Moonlit Dragon Pattern", "Fantasy", "fantasy", "dragon", 38, 34, "Intermediate", true),
-  mock("paper-cut-phoenix", "Paper-cut Phoenix Pattern", "Chinese Style", "chinese-style", "phoenix", 42, 38, "Intermediate", true),
   mock("woodland-fox", "Woodland Fox Pattern", "Animals", "animals", "fox", 26, 24, "Easy", true),
   mock("garden-tulip", "Garden Tulip Pattern", "Flowers", "flowers", "flower", 20, 28, "Beginner"),
   mock("luna-moth", "Luna Moth Pattern", "Animals", "animals", "moth", 30, 24, "Easy"),
   mock("summer-strawberry", "Summer Strawberry Pattern", "Food", "food", "berry", 18, 20, "Beginner"),
   mock("forest-mushroom", "Forest Mushroom Pattern", "Food", "food", "mushroom", 22, 22, "Beginner"),
   mock("tiny-triceratops", "Tiny Triceratops Pattern", "Dinosaurs", "dinosaurs", "dinosaur", 28, 20, "Easy"),
-  mock("festival-lantern", "Festival Lantern Pattern", "Chinese Style", "chinese-style", "lantern", 24, 32, "Easy"),
 ];
 
 export const categories: Category[] = [
@@ -146,7 +148,6 @@ export const categories: Category[] = [
   { slug: "dinosaurs", name: "Dinosaurs", description: "Prehistoric silhouettes for compact boards.", count: 19, art: "dinosaur", size: "standard" },
   { slug: "christmas", name: "Christmas", description: "Ornaments, winter icons and festive motifs.", count: 45, art: "moth", size: "wide" },
   { slug: "halloween", name: "Halloween", description: "Moody seasonal projects and curious creatures.", count: 27, art: "mushroom", size: "standard" },
-  { slug: "chinese-style", name: "Chinese Style", description: "Traditional forms reinterpreted as bead mosaics.", count: 24, art: "phoenix", size: "wide" },
 ];
 
 export const getPattern = (slug: string) => patterns.find((pattern) => pattern.slug === slug);

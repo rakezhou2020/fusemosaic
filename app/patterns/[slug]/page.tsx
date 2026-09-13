@@ -4,10 +4,10 @@ import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { PatternCard } from "@/components/pattern-card";
 import { PatternVisual } from "@/components/pattern-visual";
-import { publicPattern, publicPatterns } from "@/lib/public-patterns";
+import { publicChineseCollection, publicPattern, publicPatterns } from "@/lib/public-patterns";
 import styles from "./page.module.css";
 
-export async function generateStaticParams() { return (await publicPatterns()).map(({ slug }) => ({ slug })); }
+export async function generateStaticParams() { const [freePatterns, chineseCollection] = await Promise.all([publicPatterns(), publicChineseCollection()]); return [...freePatterns, ...chineseCollection].map(({ slug }) => ({ slug })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params; const pattern = await publicPattern(slug); if (!pattern) return {};
@@ -16,10 +16,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PatternDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params; const pattern = await publicPattern(slug); if (!pattern) notFound();
-  const related = (await publicPatterns()).filter((item) => item.slug !== pattern.slug && (item.categorySlug === pattern.categorySlug || item.featured)).slice(0, 4);
+  const related = (pattern.access === "paid" ? await publicChineseCollection() : await publicPatterns()).filter((item) => item.slug !== pattern.slug && (item.categorySlug === pattern.categorySlug || item.featured)).slice(0, 4);
   const jsonLd = {
     "@context": "https://schema.org", "@type": "CreativeWork", name: pattern.title, description: pattern.description,
-    url: `https://fusemosaic.com/patterns/${pattern.slug}`, isAccessibleForFree: true,
+    url: `https://fusemosaic.com/patterns/${pattern.slug}`, isAccessibleForFree: pattern.access === "free",
     image: pattern.previewImage ? `https://fusemosaic.com${pattern.previewImage}` : undefined,
     breadcrumb: { "@type": "BreadcrumbList", itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: "https://fusemosaic.com" },
@@ -29,16 +29,17 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
   };
   const liveDownloads = pattern.downloadImage !== "#";
   const livePdf = pattern.downloadPdf !== "#";
+  const isPaid = pattern.access === "paid";
   return (
     <article className="pattern-detail shell">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Patterns", href: "/patterns" }, { label: pattern.title }]} />
-      <header className="detail-header"><div><p className="eyebrow">{pattern.category} / Free pattern</p><h1 className="detail-title">{pattern.title}</h1><p className="detail-deck">{pattern.description}</p></div><span className="detail-free">Free download</span></header>
+      <header className="detail-header"><div><p className="eyebrow">{pattern.category} / {isPaid ? "Premium pattern" : "Free pattern"}</p><h1 className="detail-title">{pattern.title}</h1><p className="detail-deck">{pattern.description}</p></div><span className="detail-free">{isPaid ? "Premium" : "Free download"}</span></header>
       <div className="detail-layout">
         <div className="detail-preview"><PatternVisual art={pattern.art} image={pattern.previewImage || undefined} label={pattern.title} priority /></div>
         <aside className="detail-panel">
           <section className="spec-panel"><h2>Pattern specs</h2><dl className="spec-list"><div><dt>Grid size</dt><dd>{pattern.gridWidth} × {pattern.gridHeight}</dd></div><div><dt>Colors</dt><dd>{pattern.colors.length}</dd></div><div><dt>Total beads</dt><dd>{pattern.totalBeads.toLocaleString("en-US")}</dd></div><div><dt>Difficulty</dt><dd>{pattern.difficulty}</dd></div><div><dt>Finished size</dt><dd>{pattern.estimatedSize}</dd></div></dl></section>
-          <section className="download-panel"><h2>Download pattern</h2><p>{livePdf ? "Download the complete printable PDF, including the overview, color key, counts, and coordinate charts." : liveDownloads ? "Download the free chart image." : "This free pattern will be added with the final artwork."}</p><div className="download-actions">{livePdf ? <a className="download-button" href={pattern.downloadPdf} download>Download PDF</a> : liveDownloads ? <a className="download-button" href={pattern.downloadImage} download>Download chart image</a> : <span className="download-button" aria-disabled="true">Download unavailable</span>}</div><p className={styles.personalUse}>Free for personal craft use.</p></section>
+          <section className="download-panel"><h2>{isPaid ? "Premium access" : "Download pattern"}</h2><p>{isPaid ? "This original pattern is part of the paid Chinese Collection. Purchase access will be added here." : livePdf ? "Download the complete printable PDF, including the overview, color key, counts, and coordinate charts." : liveDownloads ? "Download the free chart image." : "This free pattern will be added with the final artwork."}</p><div className="download-actions">{isPaid ? <span className="download-button" aria-disabled="true">Purchase coming soon</span> : livePdf ? <a className="download-button" href={pattern.downloadPdf} download>Download PDF</a> : liveDownloads ? <a className="download-button" href={pattern.downloadImage} download>Download chart image</a> : <span className="download-button" aria-disabled="true">Download unavailable</span>}</div>{!isPaid ? <p className={styles.personalUse}>Free for personal craft use.</p> : null}</section>
           <section className="color-panel"><p className="eyebrow">Build note</p><p className="detail-deck">Counts are a planning guide. Keep a small reserve of each shade for substitutions and repairs.</p></section>
         </aside>
       </div>
