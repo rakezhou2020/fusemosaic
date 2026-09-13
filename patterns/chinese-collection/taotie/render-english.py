@@ -45,4 +45,8 @@ for by in range(3):
 c.save()
 doc=pdfium.PdfDocument(str(p/'Taotie-Bead-Pattern-English.pdf'))
 for i in [0,1,9]:doc[i].render(scale=1.5).to_pil().save(str(p/f'check-{i}.png'))
+# Keep a page-ready detail preview derived from the PDF itself. Section 3 has a
+# dense, representative grid and makes the letter-coded bead instructions legible.
+detail=doc[3].render(scale=2).to_pil().crop((90,170,1130,1235))
+detail.save(str(p/'chart-detail-preview.png'))
 print('PDF pages:',len(doc))

@@ -14,6 +14,7 @@ export type Pattern = {
   categorySlug: string;
   description: string;
   previewImage: string;
+  detailImage?: string;
   downloadImage: string;
   downloadPdf: string;
   gridWidth: number;
@@ -111,8 +112,9 @@ export const patterns: Pattern[] = [
     category: "Chinese Style",
     categorySlug: "chinese-style",
     description: "An original Taotie, rebuilt as a subject-only 120 × 110 fuse bead mosaic. The English printable chart includes an overview, color key, counts, and nine coordinate sections.",
-    previewImage: "/images/patterns/taotie-preview.png",
-    downloadImage: "/downloads/taotie-bead-pattern.jpg",
+    previewImage: "/images/patterns/taotie-finished-photo.png",
+    detailImage: "/images/patterns/taotie-chart-detail.png",
+    downloadImage: "#",
     downloadPdf: "/downloads/taotie-bead-pattern.pdf",
     gridWidth: 120,
     gridHeight: 110,

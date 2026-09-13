@@ -7,7 +7,7 @@ This directory maintains products for the website's dedicated `/chinese` collect
 - Future artwork and pattern updates for this collection belong here.
 - Default deliverables are English: subject-only bead art, exact cell/color data, letter-coded coordinate charts, color counts, size guidance, and printable overview plus tiled PDF.
 - Mark owner-created work as `content_rights_status: original`. Original work is automatically approved and may publish directly; other rights statuses still require approval.
-- Keep preview, chart, counts and PDF based on the same pattern data. Check edge connectivity and PDF layout.
+- Keep preview, chart, counts and PDF based on the same pattern data. Each product page uses an owner-provided finished-piece photo plus a chart-detail preview rendered from its PDF; check edge connectivity and PDF layout.
 - Website category: `chinese-style`; collection route: `/chinese`. Product placement belongs in the collection listing, not the header/hero.
 
 This source directory does not automatically publish files to the live website or its database.
