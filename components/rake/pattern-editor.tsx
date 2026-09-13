@@ -101,7 +101,6 @@ export function PatternEditor({ pattern, categories }: { pattern: Pattern; categ
 
   return (
     <div className="rake-form">
-      <p>{message}</p>
       {values.preview_url ? <img className="rake-preview" src={String(values.preview_url)} alt="Preview" /> : null}
       <label>Title<input value={String(values.title ?? "")} onChange={(event) => update("title", event.target.value)} /></label>
       <label>Slug<input value={String(values.slug ?? "")} onChange={(event) => update("slug", event.target.value)} /></label>
@@ -152,11 +151,12 @@ export function PatternEditor({ pattern, categories }: { pattern: Pattern; categ
       </section>
       <div className="rake-actions">
         <button type="button" onClick={reanalyze}>Reanalyze colors</button>
-        <button type="button" onClick={() => save()}>Save draft</button>
+        <button type="button" className="rake-button--save" onClick={() => save()}>Save draft</button>
         <button type="button" className="rake-button--muted" onClick={() => save("published")}>Publish</button>
         <button type="button" className="rake-button--muted" onClick={() => save("hidden")}>Hide</button>
         <button type="button" className="rake-button--muted" onClick={() => { if (confirm("Mark this pattern removed?")) save("removed"); }}>Remove</button>
         {values.download_url ? <a href={String(values.download_url)}>Download JPG</a> : null}
+        {message ? <span className="rake-save-message" role="status" aria-live="polite">{message}</span> : null}
       </div>
     </div>
   );
