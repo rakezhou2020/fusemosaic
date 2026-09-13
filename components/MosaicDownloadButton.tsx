@@ -8,9 +8,9 @@ type Phase = "idle" | "loading" | "settling" | "complete";
 
 function defaultCells(columns: number) {
   return Array.from({ length: columns * 3 }, (_, index) => {
-    const row = Math.floor(index / columns);
-    const column = index % columns;
-    return (column * 7 + row * 3 + Math.floor(column / 2)) % BRAND_COLORS.length;
+    let value = Math.imul(index + columns * 19 + 1, 0x45d9f3b);
+    value = Math.imul(value ^ (value >>> 16), 0x45d9f3b);
+    return ((value ^ (value >>> 16)) >>> 0) % BRAND_COLORS.length;
   });
 }
 
@@ -130,7 +130,6 @@ export function MosaicDownloadButton({ href, filename }: { href: string; filenam
           <span className={`${styles.cell} ${phase === "loading" || phase === "settling" ? styles.moving : ""}`} key={`${columns}-${index}`} style={{ backgroundColor: BRAND_COLORS[color] }} />
         ))}
       </span>
-      <span className={styles.arrow} aria-hidden="true">↓</span>
       <span className={styles.status} role="status" aria-live="polite">{phase === "loading" ? "Preparing download" : phase === "settling" ? "Download ready" : phase === "complete" ? "Download started" : ""}</span>
     </button>
   );
