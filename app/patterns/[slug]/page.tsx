@@ -39,7 +39,7 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
           <section className="color-panel"><p className="eyebrow">Build note</p><p className="detail-deck">Counts are a planning guide. Keep a small reserve of each shade for substitutions and repairs.</p></section>
         </aside>
       </div>
-      <section className="color-guide-section"><p className="eyebrow">Palette</p><h2>Color guide</h2><div className="color-grid">{pattern.colors.map((color) => <div className="color-chip" key={`${color.code}-${color.hex}`}><i style={{ backgroundColor: color.hex }} /><span><strong>{color.code} · {color.name}</strong><small>{color.hex}</small></span><span>{color.beads} beads</span></div>)}</div></section>
+      <section className="color-guide-section"><p className="eyebrow">Palette</p><h2>Color guide</h2><div className="color-grid">{pattern.colors.map((color) => <div className="color-chip" key={`${color.code}-${color.hex}`}><i style={{ backgroundColor: color.hex }} /><span><strong>{color.name ? `${color.code} · ${color.name}` : color.code}</strong><small>{color.hex}</small></span><span>{color.beads} beads</span></div>)}</div></section>
       <section className="related-section"><p className="eyebrow">Keep exploring</p><h2>Related patterns</h2><div className="pattern-grid">{related.map((item) => <PatternCard pattern={item} key={item.slug} />)}</div></section>
     </article>
   );
