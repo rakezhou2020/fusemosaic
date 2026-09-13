@@ -16,6 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PatternDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params; const pattern = await publicPattern(slug); if (!pattern) notFound();
+  const isPaid = pattern.access === "paid";
   const related = (pattern.access === "paid" ? await publicChineseCollection() : await publicPatterns()).filter((item) => item.slug !== pattern.slug && (item.categorySlug === pattern.categorySlug || item.featured)).slice(0, 4);
   const jsonLd = {
     "@context": "https://schema.org", "@type": "CreativeWork", name: pattern.title, description: pattern.description,
@@ -23,17 +24,16 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
     image: pattern.previewImage ? `https://fusemosaic.com${pattern.previewImage}` : undefined,
     breadcrumb: { "@type": "BreadcrumbList", itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: "https://fusemosaic.com" },
-      { "@type": "ListItem", position: 2, name: "Patterns", item: "https://fusemosaic.com/patterns" },
+      { "@type": "ListItem", position: 2, name: isPaid ? "Chinese Collection" : "Patterns", item: `https://fusemosaic.com${isPaid ? "/chinese" : "/patterns"}` },
       { "@type": "ListItem", position: 3, name: pattern.title, item: `https://fusemosaic.com/patterns/${pattern.slug}` },
     ] },
   };
   const liveDownloads = pattern.downloadImage !== "#";
   const livePdf = pattern.downloadPdf !== "#";
-  const isPaid = pattern.access === "paid";
   return (
     <article className="pattern-detail shell">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Patterns", href: "/patterns" }, { label: pattern.title }]} />
+      <Breadcrumb items={[{ label: "Home", href: "/" }, { label: isPaid ? "Chinese Collection" : "Patterns", href: isPaid ? "/chinese" : "/patterns" }, { label: pattern.title }]} />
       <header className="detail-header"><div><p className="eyebrow">{pattern.category} / {isPaid ? "Premium pattern" : "Free pattern"}</p><h1 className="detail-title">{pattern.title}</h1><p className="detail-deck">{pattern.description}</p></div><span className="detail-free">{isPaid ? "Premium" : "Free download"}</span></header>
       <div className="detail-layout">
         <div className="detail-preview"><PatternVisual art={pattern.art} image={pattern.previewImage || undefined} label={pattern.title} priority /></div>
