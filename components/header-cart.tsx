@@ -32,6 +32,7 @@ function itemTitle(item: CartItem) {
 export function HeaderCart() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [open, setOpen] = useState(false);
+  const [checkoutState, setCheckoutState] = useState<"idle" | "creating" | "pending" | "failed">("idle");
   const menu = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,6 +60,28 @@ export function HeaderCart() {
     window.dispatchEvent(new Event(CART_CHANGE_EVENT));
   }
 
+  async function beginCheckout(item: CartItem) {
+    // Open synchronously so browser popup protections do not block the provider checkout.
+    const checkoutWindow = window.open("", "_blank");
+    if (checkoutWindow) checkoutWindow.opener = null;
+    setCheckoutState("creating");
+    try {
+      const response = await fetch("/api/payment/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: item.slug }),
+      });
+      const result = await response.json() as { checkout_url?: string; error?: string };
+      if (!response.ok || !result.checkout_url) throw new Error(result.error ?? "Checkout could not be started");
+      setCheckoutState("pending");
+      if (checkoutWindow) checkoutWindow.location.assign(result.checkout_url);
+      else window.location.assign(result.checkout_url);
+    } catch {
+      checkoutWindow?.close();
+      setCheckoutState("failed");
+    }
+  }
+
   return (
     <div className={styles.cart} ref={menu}>
       <button className={styles.trigger} type="button" aria-label={`Shopping cart, ${items.length} item${items.length === 1 ? "" : "s"}`} aria-expanded={open} aria-controls="site-cart" onClick={() => setOpen((value) => !value)}>
@@ -68,7 +91,13 @@ export function HeaderCart() {
         <div className={styles.heading}><strong>Your cart</strong><span>{items.length} item{items.length === 1 ? "" : "s"}</span></div>
         {items.length ? <>
           <ul>{items.map((item) => <li key={item.slug}><div><Link href={`/patterns/${encodeURIComponent(item.slug)}`} onClick={() => setOpen(false)}>{itemTitle(item)}</Link><span>$0.99 · USDT</span></div><button type="button" onClick={() => removeItem(item.slug)} aria-label={`Remove ${itemTitle(item)} from cart`}>Remove</button></li>)}</ul>
-          <p className={styles.note}>Open a pattern to complete its secure checkout.</p>
+          <div className={styles.checkout}>
+            {items.length === 1 ? <button type="button" onClick={() => void beginCheckout(items[0])} disabled={checkoutState === "creating" || checkoutState === "pending"}>
+              {checkoutState === "creating" ? "Opening checkout…" : checkoutState === "pending" ? "Awaiting payment…" : "Checkout · $0.99"}
+            </button> : <p>Each Premium pattern has its own secure checkout. Select an item to purchase it.</p>}
+            {checkoutState === "pending" ? <p role="status">Checkout is open in a new tab. This item remains in your cart until you remove it.</p> : null}
+            {checkoutState === "failed" ? <p role="status">Checkout could not be started. Please try again.</p> : null}
+          </div>
         </> : <p className={styles.empty}>Your cart is empty. Add a premium pattern to save it here.</p>}
       </section> : null}
     </div>
