@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandMark } from "./brand-mark";
+import { HeaderCart } from "./header-cart";
 
 export function SiteHeader() {
   return (
@@ -12,11 +13,14 @@ export function SiteHeader() {
           <Link href="/chinese">Chinese Collection</Link>
           <Link href="/#premium">Premium</Link>
         </nav>
-        <form action="/patterns" className="header-search">
-          <label className="sr-only" htmlFor="header-q">Search patterns</label>
-          <input id="header-q" name="q" type="search" placeholder="Search patterns" />
-          <button aria-label="Submit search" type="submit"><span aria-hidden="true">↗</span></button>
-        </form>
+        <div className="header-tools">
+          <form action="/patterns" className="header-search">
+            <label className="sr-only" htmlFor="header-q">Search patterns</label>
+            <input id="header-q" name="q" type="search" placeholder="Search patterns" />
+            <button aria-label="Submit search" type="submit"><span aria-hidden="true">↗</span></button>
+          </form>
+          <HeaderCart />
+        </div>
       </div>
     </header>
   );

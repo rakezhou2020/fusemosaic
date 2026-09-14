@@ -2,12 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "./premium-purchase.module.css";
+import { CART_CHANGE_EVENT, CART_KEY, readCart } from "./header-cart";
 
 type Status = "idle" | "creating" | "pending" | "paid" | "failed" | "expired";
 
-const cartKey = "fusemosaic-cart";
-
-export function PremiumPurchase({ slug }: { slug: string }) {
+export function PremiumPurchase({ slug, title }: { slug: string; title: string }) {
   const [status, setStatus] = useState<Status>("idle");
   const [inCart, setInCart] = useState(false);
   const paymentId = useRef<string | null>(null);
@@ -30,10 +29,18 @@ export function PremiumPurchase({ slug }: { slug: string }) {
     return () => { active = false; window.clearInterval(interval); };
   }, [slug, status]);
 
+  useEffect(() => {
+    const refresh = () => setInCart(readCart().some((item) => item.slug === slug));
+    refresh();
+    window.addEventListener("storage", refresh);
+    window.addEventListener(CART_CHANGE_EVENT, refresh);
+    return () => { window.removeEventListener("storage", refresh); window.removeEventListener(CART_CHANGE_EVENT, refresh); };
+  }, [slug]);
+
   function addToCart() {
-    const cart = JSON.parse(window.localStorage.getItem(cartKey) ?? "[]") as unknown;
-    const items = Array.isArray(cart) ? cart.filter((item): item is string => typeof item === "string") : [];
-    if (!items.includes(slug)) window.localStorage.setItem(cartKey, JSON.stringify([...items, slug]));
+    const items = readCart();
+    if (!items.some((item) => item.slug === slug)) window.localStorage.setItem(CART_KEY, JSON.stringify([...items, { slug, title }]));
+    window.dispatchEvent(new Event(CART_CHANGE_EVENT));
     setInCart(true);
   }
 
@@ -64,7 +71,7 @@ export function PremiumPurchase({ slug }: { slug: string }) {
       <p>Unlock the complete pattern and downloadable build guide.</p>
       <p className={styles.price}>$0.99 <span>· Paid in USDT at checkout</span></p>
       <div className={styles.actions}>
-        <button className={styles.cart} type="button" onClick={addToCart} disabled={status === "creating" || status === "pending"}>{inCart ? "Added to cart" : "Add to cart"}</button>
+        <button className={styles.cart} type="button" onClick={addToCart} disabled={status === "creating" || status === "pending"}>{inCart ? "In cart" : "Add to cart"}</button>
         <button className={styles.buy} type="button" onClick={() => void beginCheckout()} disabled={status === "creating" || status === "pending"}>{status === "creating" ? "Opening checkout…" : status === "pending" ? "Awaiting payment…" : "Unlock pattern · $0.99"}</button>
       </div>
       <p className={styles.status} role="status" aria-live="polite">{status === "pending" ? "Checkout is open in a new tab. This page will unlock automatically after payment confirmation." : status === "failed" ? "Checkout could not be started. Please try again." : status === "expired" ? "This checkout expired. Start a new one to continue." : ""}</p>
