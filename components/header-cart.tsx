@@ -32,7 +32,7 @@ function itemTitle(item: CartItem) {
 export function HeaderCart() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [open, setOpen] = useState(false);
-  const [checkoutState, setCheckoutState] = useState<"idle" | "creating" | "pending" | "failed">("idle");
+  const [checkoutState, setCheckoutState] = useState<"idle" | "creating" | "pending" | "paid" | "failed">("idle");
   const menu = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,6 +42,23 @@ export function HeaderCart() {
     window.addEventListener(CART_CHANGE_EVENT, refresh);
     return () => { window.removeEventListener("storage", refresh); window.removeEventListener(CART_CHANGE_EVENT, refresh); };
   }, []);
+
+  useEffect(() => {
+    if (!open || items.length !== 1 || checkoutState === "paid") return;
+    let active = true;
+    const reconcile = async () => {
+      try {
+        const response = await fetch(`/api/payment/status?slug=${encodeURIComponent(items[0].slug)}`, { cache: "no-store" });
+        const result = await response.json() as { status?: "pending" | "paid" | "expired" | "failed" };
+        if (!active || !response.ok || !result.status) return;
+        if (result.status === "paid") setCheckoutState("paid");
+        else if (result.status === "pending") setCheckoutState("pending");
+      } catch { /* Reconciliation will retry while the cart remains open. */ }
+    };
+    void reconcile();
+    const interval = window.setInterval(() => void reconcile(), 5000);
+    return () => { active = false; window.clearInterval(interval); };
+  }, [checkoutState, items, open]);
 
   useEffect(() => {
     const closeOnOutsidePointer = (event: PointerEvent) => {
@@ -92,9 +109,10 @@ export function HeaderCart() {
         {items.length ? <>
           <ul>{items.map((item) => <li key={item.slug}><div><Link href={`/patterns/${encodeURIComponent(item.slug)}`} onClick={() => setOpen(false)}>{itemTitle(item)}</Link><span>$0.99 · USDT</span></div><button type="button" onClick={() => removeItem(item.slug)} aria-label={`Remove ${itemTitle(item)} from cart`}>Remove</button></li>)}</ul>
           <div className={styles.checkout}>
-            {items.length === 1 ? <button type="button" onClick={() => void beginCheckout(items[0])} disabled={checkoutState === "creating" || checkoutState === "pending"}>
+            {items.length === 1 && checkoutState !== "paid" ? <button type="button" onClick={() => void beginCheckout(items[0])} disabled={checkoutState === "creating" || checkoutState === "pending"}>
               {checkoutState === "creating" ? "Opening checkout…" : checkoutState === "pending" ? "Awaiting payment…" : "Checkout · $0.99"}
             </button> : <p>Each Premium pattern has its own secure checkout. Select an item to purchase it.</p>}
+            {checkoutState === "paid" ? <Link className={styles.download} href={`/patterns/${encodeURIComponent(items[0].slug)}`} onClick={() => setOpen(false)}>Payment confirmed · Download pattern</Link> : null}
             {checkoutState === "pending" ? <p role="status">Checkout is open in a new tab. This item remains in your cart until you remove it.</p> : null}
             {checkoutState === "failed" ? <p role="status">Checkout could not be started. Please try again.</p> : null}
           </div>

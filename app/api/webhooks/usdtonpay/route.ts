@@ -30,6 +30,11 @@ function stringField(value: unknown) {
   return typeof value === "string" && value.trim() ? value.trim() : null;
 }
 
+function amountField(value: unknown) {
+  if (typeof value === "string" && value.trim()) return value.trim();
+  return typeof value === "number" && Number.isFinite(value) ? String(value) : null;
+}
+
 function timingSafeEqual(left: Uint8Array, right: Uint8Array) {
   if (left.byteLength !== right.byteLength) return false;
   let difference = 0;
@@ -72,14 +77,17 @@ export async function POST(request: Request) {
   }
 
   // USDTonPay only authorizes a completed payment through this event/status pair.
-  if (payload.event !== "order.paid" || payload.data?.status !== "paid") {
+  const data = payload.data;
+  // USDTonPay documents the confirmed state as PAID. Normalize casing so the
+  // same signed event is accepted whether the API serializes it as PAID/paid.
+  if (payload.event !== "order.paid" || !data || stringField(data.status)?.toLowerCase() !== "paid") {
     return Response.json({ received: true, ignored: true });
   }
 
-  const paymentId = stringField(payload.data.payment_id);
-  const orderId = stringField(payload.data.order_id);
-  const amount = stringField(payload.data.amount);
-  const currency = stringField(payload.data.currency)?.toUpperCase();
+  const paymentId = stringField(data.payment_id);
+  const orderId = stringField(data.order_id);
+  const amount = amountField(data.amount);
+  const currency = stringField(data.currency)?.toUpperCase();
   if (!paymentId || !orderId || !amount || !currency) return Response.json({ error: "Invalid webhook payload" }, { status: 400 });
 
   const order = await db().prepare(

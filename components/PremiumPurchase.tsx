@@ -30,6 +30,19 @@ export function PremiumPurchase({ slug, title }: { slug: string; title: string }
   }, [slug, status]);
 
   useEffect(() => {
+    let active = true;
+    const recoverPurchase = async () => {
+      try {
+        const response = await fetch(`/api/payment/status?slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
+        const result = await response.json() as { status?: Status };
+        if (active && response.ok && result.status && ["pending", "paid", "failed", "expired"].includes(result.status)) setStatus(result.status);
+      } catch { /* A missing or expired purchase session simply remains locked. */ }
+    };
+    void recoverPurchase();
+    return () => { active = false; };
+  }, [slug]);
+
+  useEffect(() => {
     const refresh = () => setInCart(readCart().some((item) => item.slug === slug));
     refresh();
     window.addEventListener("storage", refresh);
