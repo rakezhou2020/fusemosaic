@@ -19,6 +19,9 @@ export async function GET(request: Request) {
       : await db().prepare("SELECT id, pattern_id, pattern_slug, payment_id, amount, currency, payment_status, access_token_hash, paid_at FROM payment_orders WHERE access_token_hash=? ORDER BY updated_at DESC LIMIT 1").bind(accessTokenHash).first<PaymentOrder>();
   if (!order) return Response.json({ error: "Payment not found" }, { status: 404 });
   let status = order.payment_status;
-  try { status = await syncOrderFromProvider(db(), order); } catch { /* Keep the last known local status while the provider is unavailable. */ }
+  try { status = await syncOrderFromProvider(db(), order); } catch (error) {
+    console.warn("Premium payment status reconciliation failed", { message: error instanceof Error ? error.message : "Unknown error" });
+    /* Keep the last known local status while the provider is unavailable. */
+  }
   return Response.json({ status, slug: order.pattern_slug }, { headers: { "Cache-Control": "no-store" } });
 }

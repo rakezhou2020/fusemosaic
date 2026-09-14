@@ -150,7 +150,12 @@ export async function syncOrderFromProvider(database: D1Database, order: Payment
   const remoteStatus = provider.status;
   if (!remoteStatus || remoteStatus === "pending") return order.payment_status;
   if (remoteStatus === "paid") {
-    const valid = provider.orderId === order.id && sameAmount(provider.amount, order.amount) && provider.currency?.toUpperCase() === order.currency;
+    const orderMatches = provider.orderId === order.id;
+    const amountMatches = sameAmount(provider.amount, order.amount);
+    const currencyMatches = provider.currency?.toUpperCase() === order.currency;
+    // Diagnostic fields deliberately contain no payment ID, customer data, or secret.
+    console.info("Premium payment reconciliation", { remoteStatus, hasProviderOrderId: Boolean(provider.orderId), orderMatches, hasProviderAmount: Boolean(provider.amount), amountMatches, providerCurrency: provider.currency?.toUpperCase() ?? null, currencyMatches });
+    const valid = orderMatches && amountMatches && currencyMatches;
     if (!valid) return order.payment_status;
     await database.prepare("UPDATE payment_orders SET payment_status='paid', paid_at=COALESCE(paid_at, CURRENT_TIMESTAMP), updated_at=CURRENT_TIMESTAMP WHERE id=? AND payment_status!='paid'").bind(order.id).run();
     return "paid";
