@@ -107,10 +107,10 @@ export function HeaderCart() {
       {open ? <section className={styles.panel} id="site-cart" aria-label="Shopping cart">
         <div className={styles.heading}><strong>Your cart</strong><span>{items.length} item{items.length === 1 ? "" : "s"}</span></div>
         {items.length ? <>
-          <ul>{items.map((item) => <li key={item.slug}><div><Link href={`/patterns/${encodeURIComponent(item.slug)}`} onClick={() => setOpen(false)}>{itemTitle(item)}</Link><span>$0.99 · USDT</span></div><button type="button" onClick={() => removeItem(item.slug)} aria-label={`Remove ${itemTitle(item)} from cart`}>Remove</button></li>)}</ul>
+          <ul>{items.map((item) => <li key={item.slug}><div><Link href={`/patterns/${encodeURIComponent(item.slug)}`} onClick={() => setOpen(false)}>{itemTitle(item)}</Link><span>$9.90 · USDT</span></div><button type="button" onClick={() => removeItem(item.slug)} aria-label={`Remove ${itemTitle(item)} from cart`}>Remove</button></li>)}</ul>
           <div className={styles.checkout}>
             {items.length === 1 && checkoutState !== "paid" ? <button type="button" onClick={() => void beginCheckout(items[0])} disabled={checkoutState === "creating" || checkoutState === "pending"}>
-              {checkoutState === "creating" ? "Opening checkout…" : checkoutState === "pending" ? "Awaiting payment…" : "Checkout · $0.99"}
+              {checkoutState === "creating" ? "Opening checkout…" : checkoutState === "pending" ? "Awaiting payment…" : "Checkout · $9.90"}
             </button> : <p>Each Premium pattern has its own secure checkout. Select an item to purchase it.</p>}
             {checkoutState === "paid" ? <Link className={styles.download} href={`/patterns/${encodeURIComponent(items[0].slug)}`} onClick={() => setOpen(false)}>Payment confirmed · Download pattern</Link> : null}
             {checkoutState === "pending" ? <p role="status">Checkout is open in a new tab. This item remains in your cart until you remove it.</p> : null}

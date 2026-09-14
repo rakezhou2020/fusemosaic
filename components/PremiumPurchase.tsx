@@ -82,10 +82,10 @@ export function PremiumPurchase({ slug, title }: { slug: string; title: string }
   return (
     <div className={styles.purchase}>
       <p>Unlock the complete pattern and downloadable build guide.</p>
-      <p className={styles.price}>$0.99 <span>· Paid in USDT at checkout</span></p>
+      <p className={styles.price}>$9.90 <span>· Paid in USDT at checkout</span></p>
       <div className={styles.actions}>
         <button className={styles.cart} type="button" onClick={addToCart} disabled={status === "creating" || status === "pending"}>{inCart ? "In cart" : "Add to cart"}</button>
-        <button className={styles.buy} type="button" onClick={() => void beginCheckout()} disabled={status === "creating" || status === "pending"}>{status === "creating" ? "Opening checkout…" : status === "pending" ? "Awaiting payment…" : "Unlock pattern · $0.99"}</button>
+        <button className={styles.buy} type="button" onClick={() => void beginCheckout()} disabled={status === "creating" || status === "pending"}>{status === "creating" ? "Opening checkout…" : status === "pending" ? "Awaiting payment…" : "Unlock pattern · $9.90"}</button>
       </div>
       <p className={styles.status} role="status" aria-live="polite">{status === "pending" ? "Checkout is open in a new tab. This page will unlock automatically after payment confirmation." : status === "failed" ? "Checkout could not be started. Please try again." : status === "expired" ? "This checkout expired. Start a new one to continue." : ""}</p>
     </div>

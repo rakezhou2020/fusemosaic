@@ -1,6 +1,7 @@
 import { getFuseMosaicEnv } from "@/lib/cloudflare";
 
-export const PREMIUM_PRICE = "0.99";
+// Premium patterns use one server-owned price. Never accept a browser-supplied amount.
+export const PREMIUM_PRICE = "9.90";
 export const PREMIUM_CURRENCY = "USDT";
 export const PURCHASE_COOKIE = "fusemosaic_purchase";
 
