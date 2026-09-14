@@ -78,9 +78,8 @@ export async function POST(request: Request) {
 
   // USDTonPay only authorizes a completed payment through this event/status pair.
   const data = payload.data;
-  // USDTonPay documents the confirmed state as PAID. Normalize casing so the
-  // same signed event is accepted whether the API serializes it as PAID/paid.
-  if (payload.event !== "order.paid" || !data || stringField(data.status)?.toLowerCase() !== "paid") {
+  // The configured USDTonPay webhook sends the documented confirmed value.
+  if (payload.event !== "order.paid" || !data || stringField(data.status) !== "PAID") {
     return Response.json({ received: true, ignored: true });
   }
 
