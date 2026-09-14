@@ -9,6 +9,10 @@ export type CartItem = { slug: string; title?: string };
 export const CART_KEY = "fusemosaic-cart";
 export const CART_CHANGE_EVENT = "fusemosaic-cart-changed";
 
+function titleFromSlug(slug: string) {
+  return slug.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
 export function readCart(): CartItem[] {
   try {
     const value = JSON.parse(window.localStorage.getItem(CART_KEY) ?? "[]") as unknown;
@@ -18,7 +22,8 @@ export function readCart(): CartItem[] {
       const entry = typeof item === "string" ? { slug: item } : item;
       if (!entry || typeof entry !== "object" || typeof entry.slug !== "string" || !entry.slug || seen.has(entry.slug)) return [];
       seen.add(entry.slug);
-      return [{ slug: entry.slug, title: typeof entry.title === "string" ? entry.title : undefined }];
+      const suppliedTitle = typeof entry.title === "string" ? entry.title.trim() : "";
+      return [{ slug: entry.slug, title: suppliedTitle || titleFromSlug(entry.slug) }];
     });
   } catch {
     return [];
@@ -26,7 +31,13 @@ export function readCart(): CartItem[] {
 }
 
 function itemTitle(item: CartItem) {
-  return item.title || item.slug.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+  return item.title || titleFromSlug(item.slug);
+}
+
+export function removeCartItem(slug: string) {
+  const next = readCart().filter((item) => item.slug !== slug);
+  window.localStorage.setItem(CART_KEY, JSON.stringify(next));
+  window.dispatchEvent(new Event(CART_CHANGE_EVENT));
 }
 
 export function HeaderCart() {
@@ -51,7 +62,11 @@ export function HeaderCart() {
         const response = await fetch(`/api/payment/status?slug=${encodeURIComponent(items[0].slug)}`, { cache: "no-store" });
         const result = await response.json() as { status?: "pending" | "paid" | "expired" | "failed" };
         if (!active || !response.ok || !result.status) return;
-        if (result.status === "paid") setCheckoutState("paid");
+        if (result.status === "paid") {
+          removeCartItem(items[0].slug);
+          setCheckoutState("idle");
+          setOpen(false);
+        }
         else if (result.status === "pending") setCheckoutState("pending");
       } catch { /* Reconciliation will retry while the cart remains open. */ }
     };
@@ -71,10 +86,8 @@ export function HeaderCart() {
   }, []);
 
   function removeItem(slug: string) {
-    const next = items.filter((item) => item.slug !== slug);
-    window.localStorage.setItem(CART_KEY, JSON.stringify(next));
-    setItems(next);
-    window.dispatchEvent(new Event(CART_CHANGE_EVENT));
+    removeCartItem(slug);
+    setItems(readCart());
   }
 
   async function beginCheckout(item: CartItem) {

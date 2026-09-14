@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "./premium-purchase.module.css";
-import { CART_CHANGE_EVENT, CART_KEY, readCart } from "./header-cart";
+import { CART_CHANGE_EVENT, CART_KEY, readCart, removeCartItem } from "./header-cart";
 
 type Status = "idle" | "creating" | "pending" | "paid" | "failed" | "expired";
 
@@ -20,6 +20,7 @@ export function PremiumPurchase({ slug, title }: { slug: string; title: string }
         const result = await response.json() as { status?: Status };
         if (!active || !result.status) return;
         if (["paid", "failed", "expired"].includes(result.status)) {
+          if (result.status === "paid") removeCartItem(slug);
           setStatus(result.status);
         }
       } catch { /* The next polling interval retries a transient network failure. */ }
@@ -35,7 +36,10 @@ export function PremiumPurchase({ slug, title }: { slug: string; title: string }
       try {
         const response = await fetch(`/api/payment/status?slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
         const result = await response.json() as { status?: Status };
-        if (active && response.ok && result.status && ["pending", "paid", "failed", "expired"].includes(result.status)) setStatus(result.status);
+        if (active && response.ok && result.status && ["pending", "paid", "failed", "expired"].includes(result.status)) {
+          if (result.status === "paid") removeCartItem(slug);
+          setStatus(result.status);
+        }
       } catch { /* A missing or expired purchase session simply remains locked. */ }
     };
     void recoverPurchase();

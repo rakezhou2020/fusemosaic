@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { removeCartItem } from "./header-cart";
 import styles from "./payment-success.module.css";
 
 type PurchaseState = "checking" | "pending" | "paid" | "failed" | "expired" | "missing";
@@ -23,7 +24,10 @@ export function PaymentSuccess() {
         const purchaseSlug = result.slug;
         setSlug(purchaseSlug);
         setState(result.status);
-        if (result.status === "paid") window.setTimeout(() => router.replace(`/patterns/${encodeURIComponent(purchaseSlug)}`), 900);
+        if (result.status === "paid") {
+          removeCartItem(purchaseSlug);
+          window.setTimeout(() => router.replace(`/patterns/${encodeURIComponent(purchaseSlug)}`), 900);
+        }
       } catch {
         if (active) setState("missing");
       }
