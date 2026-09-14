@@ -56,7 +56,7 @@ export function HeaderCart() {
       } catch { /* Reconciliation will retry while the cart remains open. */ }
     };
     void reconcile();
-    const interval = window.setInterval(() => void reconcile(), 5000);
+    const interval = window.setInterval(() => void reconcile(), 1500);
     return () => { active = false; window.clearInterval(interval); };
   }, [checkoutState, items, open]);
 

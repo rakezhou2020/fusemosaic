@@ -29,7 +29,7 @@ export function PaymentSuccess() {
       }
     };
     void checkPurchase();
-    const interval = window.setInterval(() => void checkPurchase(), 3000);
+    const interval = window.setInterval(() => void checkPurchase(), 1500);
     return () => { active = false; window.clearInterval(interval); };
   }, [router]);
 

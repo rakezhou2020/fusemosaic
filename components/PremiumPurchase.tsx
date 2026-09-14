@@ -25,7 +25,7 @@ export function PremiumPurchase({ slug, title }: { slug: string; title: string }
       } catch { /* The next polling interval retries a transient network failure. */ }
     };
     void check();
-    const interval = window.setInterval(() => void check(), 5000);
+    const interval = window.setInterval(() => void check(), 1500);
     return () => { active = false; window.clearInterval(interval); };
   }, [slug, status]);
 
