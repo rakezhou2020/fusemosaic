@@ -7,6 +7,7 @@ export type FuseMosaicEnv = {
   ADMIN_PASSWORD?: string;
   ADMIN_SESSION_SECRET?: string;
   PAYMENT_API_KEY?: string;
+  PAYMENT_WEBHOOK_SECRET?: string;
 };
 
 export function getFuseMosaicEnv(): FuseMosaicEnv {
