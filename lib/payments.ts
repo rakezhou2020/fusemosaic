@@ -45,12 +45,26 @@ function firstText(record: JsonRecord, keys: string[]): string | null {
   return null;
 }
 
+function firstAmount(record: JsonRecord, keys: string[]): string | null {
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === "string" && value.trim()) return value.trim();
+    if (typeof value === "number" && Number.isFinite(value)) return String(value);
+  }
+  return null;
+}
+
 function paymentPayload(value: unknown): JsonRecord {
   if (!isRecord(value)) return {};
-  for (const key of ["data", "payment", "result"]) {
-    if (isRecord(value[key])) return value[key];
+  let record = value;
+  // Status responses may be shaped as { data: { payment: { ... } } }.
+  // Walk only known response wrappers and keep the actual payment record.
+  for (let depth = 0; depth < 3; depth += 1) {
+    const nested = ["data", "payment", "result"].map((key) => record[key]).find(isRecord);
+    if (!nested) break;
+    record = nested;
   }
-  return value;
+  return record;
 }
 
 function paymentStatus(value: string | null): ProviderPayment["status"] {
@@ -70,7 +84,7 @@ export function parseProviderPayment(value: unknown): ProviderPayment {
     paymentId: firstText(record, ["id", "payment_id", "paymentId"]),
     checkoutUrl: firstText(record, ["checkout_url", "checkoutUrl", "payment_url", "paymentUrl", "hosted_url", "hostedUrl", "url"]) ?? firstText(checkout, ["url", "checkout_url"]),
     orderId: firstText(record, ["order_id", "orderId", "merchant_order_id"]),
-    amount: firstText(record, ["amount", "total", "price"]),
+    amount: firstAmount(record, ["amount", "total", "price", "expected_amount", "expectedAmount"]),
     currency: firstText(record, ["currency", "asset"]),
     status: paymentStatus(firstText(record, ["status", "payment_status", "paymentStatus", "state"])),
   };
