@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { PatternCard } from "@/components/pattern-card";
 import { PatternVisual } from "@/components/pattern-visual";
+import { MosaicDownloadButton } from "@/components/MosaicDownloadButton";
 import { PremiumPurchase } from "@/components/PremiumPurchase";
 import { publicChineseCollection, publicPattern, publicPatterns } from "@/lib/public-patterns";
 import styles from "./page.module.css";
@@ -30,7 +31,6 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
     ] },
   };
   const liveDownloads = pattern.downloadImage !== "#";
-  const livePdf = pattern.downloadPdf !== "#";
   return (
     <article className="pattern-detail shell">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -40,7 +40,7 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
         <div className="detail-preview"><PatternVisual art={pattern.art} image={pattern.previewImage || undefined} label={pattern.title} priority /></div>
         <aside className="detail-panel">
           <section className="spec-panel"><h2>Pattern specs</h2><dl className="spec-list"><div><dt>Grid size</dt><dd>{pattern.gridWidth} × {pattern.gridHeight}</dd></div><div><dt>Colors</dt><dd>{pattern.colors.length}</dd></div><div><dt>Total beads</dt><dd>{pattern.totalBeads.toLocaleString("en-US")}</dd></div><div><dt>Difficulty</dt><dd>{pattern.difficulty}</dd></div><div><dt>Finished size</dt><dd>{pattern.estimatedSize}</dd></div></dl></section>
-          <section className="download-panel"><h2>{isPaid ? "Premium access" : "Download pattern"}</h2>{isPaid ? <PremiumPurchase slug={pattern.slug} title={pattern.title} /> : <><p>{livePdf ? "Download the complete printable PDF, including the overview, color key, counts, and coordinate charts." : liveDownloads ? "Download the free chart image." : "This free pattern will be added with the final artwork."}</p><div className="download-actions">{livePdf ? <a className="download-button" href={pattern.downloadPdf} download>Download PDF</a> : liveDownloads ? <a className="download-button" href={pattern.downloadImage} download>Download chart image</a> : <span className="download-button" aria-disabled="true">Download unavailable</span>}</div><p className={styles.personalUse}>Free for personal craft use.</p></>}</section>
+          <section className="download-panel"><h2>{isPaid ? "Premium access" : "Download pattern"}</h2>{isPaid ? <PremiumPurchase slug={pattern.slug} title={pattern.title} /> : <><p>{liveDownloads ? "Download the free chart image." : "This free pattern will be added with the final artwork."}</p><div className="download-actions">{liveDownloads ? <MosaicDownloadButton href={pattern.downloadImage} filename={`${pattern.slug}-fusemosaic.jpg`} /> : <span className="download-button" aria-disabled="true">Download unavailable</span>}</div><p className={styles.personalUse}>Free for personal craft use.</p></>}</section>
           <section className="color-panel"><p className="eyebrow">Build note</p><p className="detail-deck">Counts are a planning guide. Keep a small reserve of each shade for substitutions and repairs.</p></section>
         </aside>
       </div>
