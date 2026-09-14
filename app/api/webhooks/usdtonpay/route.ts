@@ -37,16 +37,17 @@ function timingSafeEqual(left: Uint8Array, right: Uint8Array) {
   return difference === 0;
 }
 
-function hexToBytes(value: string) {
+function base64UrlToBytes(value: string) {
   const normalized = value.startsWith("sha256=") ? value.slice("sha256=".length) : value;
-  if (!/^[0-9a-f]{64}$/i.test(normalized)) return null;
-  const bytes = new Uint8Array(normalized.length / 2);
-  for (let index = 0; index < bytes.byteLength; index += 1) bytes[index] = Number.parseInt(normalized.slice(index * 2, index * 2 + 2), 16);
-  return bytes;
+  // USDTonPay sends the 32-byte HMAC digest as unpadded Base64URL after sha256=.
+  if (!/^[A-Za-z0-9_-]{43}$/.test(normalized)) return null;
+  const base64 = normalized.replace(/-/g, "+").replace(/_/g, "/") + "=";
+  const decoded = atob(base64);
+  return Uint8Array.from(decoded, (character) => character.charCodeAt(0));
 }
 
 async function validSignature(rawBody: ArrayBuffer, signature: string, secret: string) {
-  const supplied = hexToBytes(signature);
+  const supplied = base64UrlToBytes(signature);
   if (!supplied) return false;
   const key = await crypto.subtle.importKey("raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   const expected = new Uint8Array(await crypto.subtle.sign("HMAC", key, rawBody));
