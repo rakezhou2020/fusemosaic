@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { trackPatternDownload } from "@/lib/analytics";
 import styles from "./premium-purchase.module.css";
 import { CART_CHANGE_EVENT, CART_KEY, readCart, removeCartItem } from "./header-cart";
 
 type Status = "idle" | "creating" | "pending" | "paid" | "failed" | "expired";
 
-export function PremiumPurchase({ slug, title }: { slug: string; title: string }) {
+export function PremiumPurchase({ slug, title, category }: { slug: string; title: string; category: string }) {
   const [status, setStatus] = useState<Status>("idle");
   const [inCart, setInCart] = useState(false);
   const paymentId = useRef<string | null>(null);
@@ -80,7 +81,7 @@ export function PremiumPurchase({ slug, title }: { slug: string; title: string }
   }
 
   if (status === "paid") {
-    return <div className={styles.unlocked}><strong>Pattern unlocked</strong><p>Your payment is confirmed. Your build guide is ready.</p><a href={`/api/payment/download/${encodeURIComponent(slug)}`}>Download build guide</a></div>;
+    return <div className={styles.unlocked}><strong>Pattern unlocked</strong><p>Your payment is confirmed. Your build guide is ready.</p><a href={`/api/payment/download/${encodeURIComponent(slug)}`} onClick={() => trackPatternDownload({ slug, title, category, fileType: "pdf", fileName: `${slug}-build-guide.pdf` })}>Download build guide</a></div>;
   }
 
   return (

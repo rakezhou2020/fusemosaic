@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { fileTypeFromName, trackPatternDownload } from "@/lib/analytics";
 import styles from "./MosaicDownloadButton.module.css";
 
 const BRAND_COLORS = ["#ed5c50", "#3a91c6", "#f4c430", "#68a66b"];
@@ -44,7 +45,7 @@ function useVisibleColumns() {
   return columns;
 }
 
-export function MosaicDownloadButton({ href, filename }: { href: string; filename: string }) {
+export function MosaicDownloadButton({ href, filename, pattern }: { href: string; filename: string; pattern: { slug: string; title: string; category: string } }) {
   const columns = useVisibleColumns();
   const idleCells = useMemo(() => defaultCells(columns), [columns]);
   const completeCells = useMemo(() => orderedCells(columns), [columns]);
@@ -106,6 +107,7 @@ export function MosaicDownloadButton({ href, filename }: { href: string; filenam
 
   async function downloadPattern() {
     if (phase === "loading" || phase === "settling") return;
+    trackPatternDownload({ ...pattern, fileType: fileTypeFromName(filename), fileName: filename });
     setPhase("loading");
     try {
       const response = await fetch(href);
