@@ -39,6 +39,12 @@ export type ArtVariant =
   | "phoenix"
   | "fox"
   | "flower"
+  | "person"
+  | "bowl"
+  | "apple"
+  | "ball"
+  | "tree"
+  | "castle"
   | "moth"
   | "berry"
   | "mushroom"
@@ -144,12 +150,12 @@ export const patterns: Pattern[] = [
 
 export const categories: Category[] = [
   { slug: "animals", name: "Animals", description: "Wildlife, pets, woodland creatures and ocean life.", count: 82, art: "fox", size: "large" },
-  { slug: "flowers", name: "Flowers", description: "Graphic blooms and botanical studies.", count: 38, art: "flower", size: "wide" },
-  { slug: "fantasy", name: "Fantasy", description: "Dragons, celestial beings and storybook creatures.", count: 51, art: "dragon", size: "tall" },
-  { slug: "food", name: "Food", description: "Fruit, sweets and tiny kitchen favorites.", count: 34, art: "berry", size: "standard" },
-  { slug: "dinosaurs", name: "Dinosaurs", description: "Prehistoric silhouettes for compact boards.", count: 19, art: "dinosaur", size: "standard" },
-  { slug: "christmas", name: "Christmas", description: "Ornaments, winter icons and festive motifs.", count: 45, art: "moth", size: "wide" },
-  { slug: "halloween", name: "Halloween", description: "Moody seasonal projects and curious creatures.", count: 27, art: "mushroom", size: "standard" },
+  { slug: "people", name: "People", description: "People and character studies.", count: 72, art: "person", size: "standard" },
+  { slug: "food-drinks", name: "Food & Drinks", description: "Meals, desserts, drinks and kitchen favorites.", count: 22, art: "bowl", size: "standard" },
+  { slug: "fruits", name: "Fruits", description: "Fresh fruit, citrus and orchard favorites.", count: 18, art: "apple", size: "standard" },
+  { slug: "sports", name: "Sports", description: "Game-day icons and active designs.", count: 14, art: "ball", size: "standard" },
+  { slug: "holidays", name: "Holidays", description: "Seasonal, festive and holiday designs.", count: 12, art: "tree", size: "standard" },
+  { slug: "culture-fantasy", name: "Culture & Fantasy", description: "Folklore, symbols and imaginative worlds.", count: 24, art: "castle", size: "standard" },
 ];
 
 export const getPattern = (slug: string) => patterns.find((pattern) => pattern.slug === slug);

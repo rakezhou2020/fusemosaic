@@ -18,6 +18,30 @@ const artBoards: Record<ArtVariant, string[]> = {
     ".....rr.....", "....rrrr....", "..rrryrrr...", ".rrryyyrrrr.", "..rrryrrr...", "....rrrr....",
     ".....gg.....", "....ggg.....", "...ggggg....", ".....ggg....", ".....gg.....", "............",
   ],
+  person: [
+    "....kkkk....", "...kwwwwk...", "...kwwwwk...", "....kkkk....", "....rrrr....", "...rrrrrr...",
+    "...rryyrr...", "...rryyrr...", "...rrrrrr...", "....bbbb....", "...bb..bb...", "..bb....bb..",
+  ],
+  bowl: [
+    "....o..o....", ".....oo.....", "............", "...rrrrrr...", "..rrrrrrrr..", ".rrryyyrrr.",
+    ".rrrrrrrrrr.", "..yyyyyyyy..", "...yyyyyy...", "....yyyy....", "............", "............",
+  ],
+  apple: [
+    ".....gg.....", "....gggg....", ".....kk.....", "....rrrr....", "..rrrrrrrr..", ".rrrrrrrrrr.",
+    ".rrryrrrrrr.", ".rrrrrrrrrr.", ".rrrrrrrrrr.", "..rrrrrrrr..", "...rrrrrr...", "............",
+  ],
+  ball: [
+    "....kkkk....", "..kkwwwwkk..", ".kwwkwwkwwk.", ".kwwwkkwwwk.", "kwkwwwwwwkw", "kwwwwwwwwwk",
+    "kwwwwwwwwwk", "kwkwwwwwwkw", ".kwwwkkwwwk.", ".kwwkwwkwwk.", "..kkwwwwkk..", "....kkkk....",
+  ],
+  tree: [
+    ".....yy.....", "....yyyy....", ".....yy.....", "....gggg....", "...gggggg...", "..gggggggg..",
+    ".gggggggggg.", "....gggg....", "...gggggg...", "..gggggggg..", ".....kk.....", "....kkkk....",
+  ],
+  castle: [
+    "..kk....kk..", "..kkyy..yyk.", "..kkkk..kkkk", "..kkkk..kkkk", ".kkkkkkkkkk.", ".kkkppppkkk.",
+    ".kkkkkkkkkk.", ".kkk.kk.kkk.", ".kkk.kk.kkk.", ".kkk.kk.kkk.", ".kkkkkkkkkk.", "............",
+  ],
   moth: [
     "yy........yy", ".yyy....yyy.", ".ypyy..yypy.", "..yyy..yyy..", "...yykkyy...", "....kkkk....",
     "...ggkkgg...", "..ggg..ggg..", ".ggg....ggg.", "gg........gg", "............", "............",
